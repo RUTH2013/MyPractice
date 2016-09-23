@@ -1,0 +1,184 @@
+/*style.css*/
+@charset "utf-8";
+
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+article,
+del,
+em,
+img,
+i,
+nav,
+aside,
+canvas,
+footer,
+header,
+menu,
+section,
+ul,
+li {
+  margin: 0px;
+  padding: 0px;
+}
+body { font-family: 'Microsoft YaHei'; position: relative;}
+.shake { animation: shake 1s ;  -webkit-animation: shake 1s ;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+
+section{ width: 100%; height: 100%; position: absolute; left: 0; top: 0;}
+section.sectionHid { opacity: 0; animation: sectionOut .5s; -webkit-animation: sectionOut .5s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+/* 第一个页面 */
+.bgColor{ background-color: #2d4081; }
+.bg-page1{ width: 429px; height: 429px; border: 1px solid #1f2b57; background-color: #233264; position: absolute; top: 50%; left: 50%; margin: -220px 0 0 -214px; border-radius: 50%; box-shadow: 0 0 0 113px #283972 , 0 0 0 114px #223161, 0 0 0 193px #2a3d79, 0 0 0 194px #273971, 0 0 0 254px #2c3f7e, 0 0 0 255px #2a3c79; -opacity: 0; }
+.bg-start{ width: 100%; height: 100%; background: url(../images/star.png) no-repeat; background-size: cover; position: absolute;}
+
+.main-page1{ width: 429px; height: 429px; position: absolute; top: 50%; left: 50%; margin: -200px 0 0 -214px; }
+.main-page1 .rocket{ width: 165px; height: 195px; position: absolute; top: -8px; left: 48px; background: url(../images/rocket.png) no-repeat; opacity: 0;}
+.main-page1 .thanks{ width: 399px; height: 228px; position: absolute; top: 53px; left: 38px; background: url(../images/thanks.png) no-repeat; opacity: 0; }
+.main-page1 .withyou{ width: 364px; height: 134px; position: absolute; top: 212px; left: 38px; background: url(../images/withyou.png) no-repeat;  opacity: 0; }
+.main-page1 .miaov{ width: 193px; height: 82px; position: absolute;  top: 6px; left: 209px; background: url(../images/miaov.png) no-repeat; opacity: 0; }
+
+section.sectionIn .bg-page1{ animation: circleWelcomeIn .5s; -webkit-animation: circleWelcomeIn .5s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .bg-start{ animation: circleWelcomeIn .5s; -webkit-animation: circleWelcomeIn .5s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .main-page1 .rocket{ animation: rocketIn 1s; -webkit-animation: rocketIn 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .main-page1 .thanks{ animation: thanksIn 1s; -webkit-animation:thanksIn 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .main-page1 .withyou{ animation: thanksIn 1s; -webkit-animation:thanksIn 1s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .main-page1 .miaov{animation: miaovIn 1s; -webkit-animation: miaovIn 1s ; animation-delay: .8s; -webkit-animation-delay: .8s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+
+section.sectionOut .bg-page1{ animation: circleWelcomeOut 1s; -webkit-animation: circleWelcomeOut 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;  }
+section.sectionOut .bg-start{ animation: circleWelcomeOut 1s; -webkit-animation: circleWelcomeOut 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;   }
+section.sectionOut .main-page1 .rocket{ animation: rocketOut 1s; -webkit-animation: rocketOut 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionOut .main-page1 .thanks{ animation: thanksOut 1s; -webkit-animation:thanksOut 1s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionOut .main-page1 .withyou{ animation: thanksOut 1s; -webkit-animation:thanksOut 1s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionOut .main-page1 .miaov{animation: miaovOut 1s; -webkit-animation: miaovOut 1s ;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+
+/*进度条*/
+.ProgressBar { width: 463px; height: 28px; border-radius: 14px; border: 1px solid #4091dc; position: absolute; bottom: 200px; left: 50%; margin-left: -231px; overflow: hidden;}
+.ProgressBar span{ width: 0; height: 28px; display: block;background: #4091dc; }
+
+/*剪头 和 音乐*/
+.arrow { width: 90px; height: 65px; position: absolute; left: 50%; bottom: 40px; margin-left: -45px; background: url(../images/arrow.png) no-repeat;  animation: upArrow 2s; -webkit-animation:upArrow 2s; animation-iteration-count: infinite; -webkit-animation-iteration-count :infinite; }
+.music { width: 50px; height: 47px; position: absolute; bottom: 20px; right: 20px; }
+.musicRun{ background: url(../images/run.png) no-repeat; animation: musicRun 3s; -webkit-animation: musicRun 3s; animation-iteration-count: infinite; -webkit-animation-iteration-count :infinite; animation-timing-function: linear;-webkit-animation-timing-function: linear;}
+.musicStop{ background: url(../images/stop.png) no-repeat; }
+
+
+/* 第二个页面  */
+.bgColor2{ background-color: #5f4ac3; }
+.bg-circle-page2{ width: 429px;height: 429px; background-color: #4a3a98; border: 1px dotted #43348c; border-radius: 50%; position: absolute; left: 105px; top: 60%; box-shadow: 0px 0px 0px 115px #5442ad,0px 0px 0px 116px #4c3b9d,0px 0px 0px 195px #5946b8,0px 0px 0px 196px #5442ae,0px 0px 0px 255px #5d49bf, 0px 0px 0px 256px #523fad; }
+.main-page2{  width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 5; opacity: 1;} 
+.planet{  width: 100%; height: 214px; position: absolute; bottom: 0px; left: 0px; background: url(../images/planet.png) no-repeat; background-size: cover; z-index: 6; opacity: 0;} 
+.human{  width: 365px; height: 445px; background: url(../images/human.png) no-repeat;  background-size: 365px 445px; position: absolute; bottom: 150px; left: 134px;  opacity: 0; z-index: 7;}
+.pirate{ width: 222px; height: 156px; background: url(../images/pirate.png) no-repeat; background-size: cover; position: absolute; bottom: 552px;  left: 44px; opacity: 0; }  
+.rocket2{ width: 103px;height: 215px; background: url(../images/rocket2.png) no-repeat; background-size: cover; position: absolute; bottom: 149px; left: 420px; opacity: 0; }
+.tower{ width: 98px; height: 115px; background: url(../images/lighthouse.png) no-repeat; background-size: cover; position: absolute;  bottom: 185px; left: 139px; opacity: 0; }
+.text { width: 426px; height: 101px;  position: absolute; top: 10%; left: 121px;  z-index: 999; background: url(../images/text1.png) no-repeat; opacity: 0;}
+.bg-start2{  width: 100%; height: 100%; background: url(../images/bg-start2.png) no-repeat; background-size: cover; position: absolute; top: 0; left: 0;  opacity: 0; }
+
+section.sectionIn .bg-circle-page2{ animation: circle2In 1.6s; -webkit-animation: circle2In 1.6s;  animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .planet{animation: page2In 0.4s; -webkit-animation: page2In 0.4s; -webkit-animation-delay: .8s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .human{ animation: humanIn 0.6s; -webkit-animation: humanIn 0.6s; -webkit-animation-delay: 1.1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .pirate{ animation: pirateIn 0.4s; -webkit-animation: pirateIn 0.4s; -webkit-animation-delay: 1.6s;  animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .rocket2{ animation: rocket2In 0.3s; -webkit-animation: rocket2In 0.3s; -webkit-animation-delay: 1.6s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .tower{ animation: towerIn 0.3s; -webkit-animation: towerIn 0.3s; -webkit-animation-delay: 1.8s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .text{ animation: textIn 1s; -webkit-animation: textIn 1s; -webkit-animation-delay: 2.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .bg-start2{ animation: start2In 0.4s; -webkit-animation: start2In 0.4s; -webkit-animation-delay: 1.9s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+
+section.sectionOut .bg-circle-page2{ animation: opaityOut 1.6s; -webkit-animation: opaityOut 1.6s;  animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .planet{animation: opaityOut 2s; -webkit-animation: opaityOut 2s; -webkit-animation-delay: .8s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .human{  animation: humanOut 2.5s; -webkit-animation: humanOut 2.5s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; opacity: 1;}
+section.sectionOut .pirate{  animation: opaityOut 1.4s; -webkit-animation: opaityOut 1.4s; -webkit-animation-delay: .8s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .rocket2{  animation: opaityOut 1.4s; -webkit-animation: opaityOut 1.4s; -webkit-animation-delay: .8s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .tower{ animation: opaityOut 1.4s; -webkit-animation: opaityOut 1.4s;  -webkit-animation-delay: .8s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionOut .text{  animation: opaityOut 1.4s; -webkit-animation: opaityOut 1.4s; -webkit-animation-delay: .8s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .bg-start2{ animation: opaityOut 1.4s; -webkit-animation: opaityOut 1.4s;  -webkit-animation-delay: .8s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+
+/* 第三个页面  */
+.bgColor3 { background-color: #243367; }
+.bg-circle-page3{ width: 369px; height: 369px; background-color: rgba(0, 0, 0, 0); border: 1px dotted #1a2449; border-radius: 50%;  position: absolute; left: 131px; bottom: 0px;  box-shadow: 0px 0px 0px 115px #202d5b,0px 0px 0px 116px #1e2953,0px 0px 0px 195px #223061,0px 0px 0px 196px #1e2b57,0px 0px 0px 255px #233265, 0px 0px 0px 256px #212f60;  opacity: 0; }
+.text3 { width: 574px; height: 101px; background: url(../images/text3.png) no-repeat; background-size: cover; position: absolute; top: 16%; left: 34px; opacity: 0; }
+.rocket3 { width: 118px; height: 294px; position: absolute; bottom: 322px; left: 261px; background: url(../images/rocket3.png) no-repeat;  background-size: cover;  opacity: 0;}
+.bg-start3{ width: 596px; height: 433px; background: url(../images/starLine.png) no-repeat; background-size: cover; position: absolute;  bottom: 0px;  left: 11px;  opacity: 0;}
+.smork1 { width: 147px; height: 230px; position: absolute; bottom: 175px; left: 248px; background: url(../images/smork2.png)no-repeat; background-size: cover; opacity: 0; }
+.smork2 { width: 364px; height: 123px; position: absolute;  bottom: 122px; left: 162px; background: url(../images/smork.png) no-repeat;  background-size: cover; opacity: 0; }
+.main-page3 { width: 100%;  height: 191px; background: url(../images/planet3.png) no-repeat; background-size: cover; position: absolute;  bottom: 0;  opacity: 0; }
+.human1 { width: 94px; height: 168px; background: url(../images/human4.png) no-repeat; background-size: cover; position: absolute; top: -120px;  left: 50px; opacity: 0; }
+.human2 { width: 74px;  height: 172px;  background: url(../images/human3.png) no-repeat; background-size: cover; position: absolute; top: -148px; left: 174px;opacity: 0; }
+.human3 { width: 70px; height: 178px; background: url(../images/human2.png) no-repeat; background-size: cover; position: absolute; top: -162px; left: 283px; opacity: 0; }
+.human4 { width: 79px;  height: 157px;  background: url(../images/human5.png) no-repeat; background-size: cover;  position: absolute; top: -132px; left: 395px;opacity: 0; }
+.human5 { width: 89px; height: 157px;  background: url(../images/human6.png) no-repeat; background-size: cover; position: absolute; top: -110px; left: 498px; opacity: 0; }
+.pirate2 { width: 164px; height: 115px; background: url(../images/pirate2.png) no-repeat; background-size: cover; position: absolute; top: -276px; left: 46px; opacity: 0; }
+
+.meteor { width: 189px;  height: 143px;  background: url(../images/start3.png) no-repeat; background-size: cover; position: absolute;  top: -657px; left: 100px; opacity: 0; }
+
+section.sectionIn .bg-circle-page3{ animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .text3{animation: text3In 1.4s; -webkit-animation: text3In 1.4s; -webkit-animation-delay: 2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .rocket3{ animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 1.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .bg-start3{animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 1.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .smork1{animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 1.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .smork2{animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 1.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .main-page3 {animation: opaityIn 1s; -webkit-animation: opaityIn 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionIn .human1{ animation: humanSIn 0.4s; -webkit-animation: humanSIn 0.4s; -webkit-animation-delay: 0.3s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .human2{ animation: humanSIn 0.4s; -webkit-animation: humanSIn 0.4s; -webkit-animation-delay: 0.5s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .human3{ animation: humanSIn 0.4s; -webkit-animation: humanSIn 0.4s; -webkit-animation-delay: 0.7s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .human4{ animation: humanSIn 0.4s; -webkit-animation: humanSIn 0.4s; -webkit-animation-delay: 0.9s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .human5{ animation: humanSIn 0.4s; -webkit-animation: humanSIn 0.4s; -webkit-animation-delay: 1.1s;animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .pirate2{ animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 1.6s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .meteor {animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+
+section.sectionOut .bg-circle-page3{opacity: 1; animation: opaityOut 2s; -webkit-animation: opaityOut 2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionOut .text3{ animation: opaityOut 0.8s; -webkit-animation: opaityOut 0.8s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .rocket3{ animation: rocket3Out 1.4s; -webkit-animation: rocket3Out 1.4s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .bg-start3{animation: opaityOut 1.4s; -webkit-animation: opaityOut 1.4s; -webkit-animation-delay: 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionOut .smork1{animation: smork1Out 0.4s; -webkit-animation: smork1Out 0.4s; -webkit-animation-delay: 0.3s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .smork2{animation: opaityOut .5s; -webkit-animation: opaityOut .5s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;}
+section.sectionOut .main-page3 { animation: opaityOut 1s; -webkit-animation: opaityOut 1s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+
+
+
+
+/* 第四个页面  */
+.bgColor4{ background-color: #243367; }
+.bg-circle-page4{ width: 369px; height: 369px; background-color: rgba(0, 0, 0, 0); border: 1px dotted #1a2449; position: absolute; left: 131px; top: 30%; box-shadow: 0px 0px 0px 115px #202d5b,0px 0px 0px 116px #1e2953,0px 0px 0px 195px #223061,0px 0px 0px 196px #1e2b57,0px 0px 0px 255px #233265, 0px 0px 0px 256px #212f60;  border-radius: 50%; opacity: 0;}
+.text4 { width: 425px; height: 41px; position: absolute; background: url(../images/text4.png) no-repeat; background-size: cover; top: 800px; left: 119px; opacity: 0;}
+.main-page4 { width: 369px; height: 369px; background: url(../images/starotund.png) no-repeat; position: absolute; top: 30%;left: 131px; opacity: 0;}
+.smork4 { width: 114px; height: 154px; background: url(../images/smork4.png) no-repeat; position: absolute; background-size: cover; top: 149px; left: 123px; }
+.smork5 { width: 364px; height: 174px; background: url(../images/smork3.png) no-repeat; position: absolute; background-size: cover; top: 192px; left: 3px;}
+.rocket4 { width: 132px; height: 343px; background: url(../images/rocket3.png) no-repeat; position: absolute; background-size: cover; top: -88px; left: 120px;}
+.btn { width: 235px; height: 66px; background: #fd5a71; border: 2px solid #393e51; position: absolute; top: 242px; left: 66px; color: #FFF; font-size: 30px;  border-radius: 15px; font-family: '微软雅黑‘'; text-align: center; text-decoration: none; line-height: 66px; }
+
+section.sectionIn .bg-circle-page4{ animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 0.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .text4 { animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 0.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionIn .main-page4{ animation: opaityIn 1.4s; -webkit-animation: opaityIn 1.4s; -webkit-animation-delay: 0.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+
+section.sectionOut .bg-circle-page4{ animation: opaityOut 1.4s; -webkit-animation: opaityOut 1.4s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards; }
+section.sectionOut .text4 { animation: opaityOut 1.2s; -webkit-animation: opaityOut 1.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;  }
+section.sectionOut .main-page4{ animation: opaityOut 1.2s; -webkit-animation: opaityOut 1.2s; animation-fill-mode: forwards; -webkit-animation-fill-mode: forwards;  }
+
+
+
+
+/* 游戏界面 */
+.bg-game{ width: 100%; height: 100%; background: url(../images/bg-game.png) no-repeat; background-size: cover; position: absolute;}
+.typeBar { width: 100%; height: 73px; background-color: rgba( 0,0,0,0.4); position: absolute;bottom: 0; left: 0; z-index: 10;}
+.typeBar .score{ width: 290px; height: 100%; float: left; background: url(../images/monster4.png) no-repeat; background-size: 60px 52px; background-position: 22px 16px; text-indent: 88px; color: #55b9f8; line-height: 70px; font-size: 30px }
+.typeBar .time{ width: 180px; height: 100%; float: left; background: url(../images/time.png) no-repeat left center; text-indent: 57px; line-height: 70px; font-size: 30px; color: #ffe400; }
+
+.alert{ width: 424px; height: 489px; background: url(../images/alert.png) no-repeat; position: absolute;  top: 45%; margin-top: -245px; left: 50%; margin-left: -212px;  z-index: 8; }
+.alert h4 { width: 300px; line-height: 24px;  position: absolute; top: 240px;left: 82px; text-align: left; color: #FFF; font-size: 20px; }
+.alert p{ width: 300px; line-height: 24px; display: block; position: absolute; top: 270px;left: 82px;text-align: left; color: #FFF; font-size: 20px; margin: 0;}
+.alert button{ width: 200px; height: 40px; line-height: 36px; background: #FFF; border: 2px solid #c5212d; text-align: center; color: #ec636d; border-radius: 6px; box-shadow: 3px 3px 5px 0px rgba(197, 33, 48, 0.8); font-size: 30px;  position: absolute;  top: 370px; left: 112px; }
+.alert2 p{ width: 100%;  left: 0px; top: 250px; text-align: center;}
+.alert2 button:nth-of-type(1){  top: 314px; }
+.alert2 button{ z-index: 99; }
+
+
+
+
+
+

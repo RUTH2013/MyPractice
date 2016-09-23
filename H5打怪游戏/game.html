@@ -1,0 +1,473 @@
+<!-- game.html -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=640, maximum-scale=0.75, target-densityDpi=device-dpi">
+	<title>打怪游戏</title>
+	<link rel="stylesheet" type="text/css" href="css/animation.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="js/lex.js"></script>
+</head>
+<body class="bgColor">
+
+<script>
+    document.body.style.height = view().h + 'px';
+</script>
+
+<div class="alert" id="begin">
+	<h4>-游戏规则-</h4>
+	<p>当小怪物飞出来时，翘起你的手指，瞄准后按死“盗版小怪物”们！一定要按准哦……</p>
+	<button>开始游戏</button>
+</div>
+<!-- <div class="alert alert2" id="end"  style="display:none;">
+	<p></p>
+	<button>分享</button>
+	<button id="play_again">再来一次</button>
+</div> -->
+
+<div class="bg-page1"></div>
+<div class="bg-game"></div>
+
+<canvas id="game" style=" position: absolute; z-index : 3;"></canvas>
+
+
+<div class="typeBar">
+	<div class="score" id="score"></div>
+	<div class="time" id="time"></div>
+	<div class="music musicRun" id="music">
+			<audio src="audio/music.mp3" preload="auto" autoplay="true"></audio>
+	</div>
+</div>
+
+<script src="js/jCanvaScript.1.5.18.min.js"></script>
+
+<script type="text/javascript">
+	
+	musicShow();
+	function musicShow(){
+		var au = s('music').getElementsByTagName('audio')[0];
+		bind(s('music') , 'touchstart', function(){
+
+			if (au.paused) {
+				au.play();
+				removeClass(s('music') , 'musicStop' ) ;
+				addClass(s('music') , 'musicRun' ) ;
+			}else{
+				au.pause();
+				removeClass(s('music') , 'musicRun' ) ;
+				addClass(s('music') , 'musicStop' ) ;
+			}
+
+		} ) ;
+	}
+
+	
+
+	function gamePage(){
+		s('game').width = view().w;
+		s('game').height = view().h;
+
+		var _this = this;
+		//怪物的对象
+		_this.monster = {
+			mon1:function( option ){
+				var monster1=new Image();
+				monster1.src="images/monster1.png";
+				monster1.onload=function(){
+				jc.start(option.canvas , true);
+				jc.image(monster1,-200,-200,109,114).id(option.id).level(2);
+				jc.start(option.canvas);}
+			},
+			mon2:function( option ){
+				var monster2=new Image();
+				monster2.src="images/monster2.png";
+				monster2.onload=function(){
+				jc.start(option.canvas , true);
+				jc.image(monster2,-200,-200,109,113).id(option.id).level(2);
+				jc.start(option.canvas);}
+			},
+			mon3:function( option ){
+				var monster3=new Image();
+				monster3.src="images/monster3.png";
+				monster3.onload=function(){
+				jc.start(option.canvas , true);
+				jc.image(monster3,-200,-200,107,129).id(option.id).level(2);
+				jc.start(option.canvas);}
+			},
+			mon4:function( option ){
+				var monster4=new Image();
+				monster4.src="images/monster4.png";
+				monster4.onload=function(){
+				jc.start(option.canvas , true);
+				jc.image(monster4,-200,-200,125,110).id(option.id).level(2);
+				jc.start(option.canvas);}
+			},
+			monDie:[ [180,138],[146,84],[103,94],[92,107] ]
+		};
+
+		//_this.monster.mon1( {canvas:'game'} );
+
+		_this.time = [10]; //但关所用时间
+
+	
+		_this.arrNum = []; // 关数 1,2,2,3,3,3
+
+		var num = 1;
+		createNum();
+		//创建关数
+		function createNum(){
+
+			for (var i = 0; i < num; i++) {
+				_this.arrNum.push(num);
+			}
+			num ++;
+			if (num < 30) {
+				createNum();
+			}
+			
+		}
+		
+		
+		_this.passNum = 0;   //关数
+		_this.positionMinX = 50;  //路径X最小值
+		_this.positionMinY = 50;  //路径y最小值
+		_this.positionMaxX = view().w - 160;  //路径X最大值
+		_this.positionMaxY = view().h - 160;  //路径y最大值
+		_this.runTime = 10000;  //绕屏一周所费时间
+		_this.speed = 30;  //变化间隔时间
+		_this.monM = {};   //怪物的对象
+		_this.position = {};  //怪物的位置
+		_this.score = 0;
+		s('score').innerHTML =  'X' + _this.score;
+
+		_this.isShake = true;
+		
+		//怪物运动
+		function monMove( option ) {
+
+			var _that = this;
+			_that.obj = option.obj;  //怪物ID
+			_that.R = option.R || 200;  //怪物运动半径
+			_that.Ang = 300; //怪物运动初始角度
+			_that.angChange = option.angChange || 5;
+			//变化量
+			_that.changeNum = ( (_this.positionMaxX - _this.positionMinX) + ( _this.positionMaxY -  _this.positionMinY) ) * 2 / (_this.runTime / _this.speed);
+
+			var firstPositionArea = getNum({ min : 0, max : 4, num : 1 })[0];  //怪物出现的位置
+			switch( firstPositionArea ){
+				//初始位置的计算
+				case 1 :
+					_that.positionX = getNum({ min : _this.positionMinX, max : _this.positionMaxX, num : 1 })[0];
+					_that.positionY = _this.positionMinY;
+				break;
+				case 2 :
+					_that.positionX = _this.positionMinX;
+					_that.positionY = getNum({ min : _this.positionMinY, max : _this.positionMaxY, num : 1 })[0];
+				break;
+				case 3 :
+					_that.positionX = getNum({ min : _this.positionMinX, max : _this.positionMaxX, num : 1 })[0];
+					_that.positionY = _this.positionMaxY;
+				break;
+				case 4 :
+					_that.positionX = _this.positionMaxX;
+					_that.positionY = getNum({ min : _this.positionMinY, max : _this.positionMaxY, num : 1 })[0];
+				break;
+
+			}
+
+			/*setTimeout(function () {
+				_that.run();
+			},500);*/
+
+			_that.timer = setInterval( function () {
+				_that.run();
+				//console.log( _that.positionX  +':'+ _that.positionY );
+			}, _this.speed);
+
+			/*setTimeout(function () {
+				_that.stop();
+			},2000);*/
+
+		}
+		//怪物运动
+		monMove.prototype.run = function() {
+			var _that = this;
+			_that.Ang = _that.Ang + _that.angChange;
+			//初始位置的计算
+			//jc('#' + _that.obj).animate({x : _that.positionX, y : _that.positionY} ,1);
+
+			//当在最上面线上时, 第一条线
+			if (_that.positionX <= _this.positionMaxX && _that.positionX > _this.positionMinX &&  _that.positionY == _this.positionMinY) {
+
+				_that.positionX = _that.positionX - _that.changeNum ;
+
+				if (_that.positionX < _this.positionMinX) {
+					_that.positionX = _this.positionMinX;
+				}
+
+			}
+			//当在最左面线上时, 第二条线
+			else if (_that.positionY < _this.positionMaxY && _that.positionX == _this.positionMinX) {
+				_that.positionY = _that.positionY + _that.changeNum ;
+				if (_that.positionY > _this.positionMaxY) {
+					_that.positionY = _this.positionMaxY;
+				}
+			}
+			//当在最下面线上时, 第三条线
+			else if (_that.positionX < _this.positionMaxX  &&  _that.positionY == _this.positionMaxY) {//当在最上面线上时
+
+				_that.positionX = _that.positionX +  _that.changeNum ;
+				if (_that.positionX > _this.positionMaxX) {
+					_that.positionX = _this.positionMaxX;
+				}
+
+			}
+			//当在最右面线上时, 第四条线
+			else if (_that.positionY <= _this.positionMaxY && _that.positionX == _this.positionMaxX) {
+				_that.positionY =  _that.positionY - _that.changeNum ;
+				if (_that.positionY < _this.positionMinY) {
+					_that.positionY = _this.positionMinY;
+				}
+			}
+			
+			_that.x = _that.positionX - _that.R * Math.cos( _that.Ang* Math.PI /180);
+			_that.y = _that.positionY - _that.R * Math.sin( _that.Ang* Math.PI /180);
+
+
+			jc('#'+ _that.obj).animate({x : _that.x, y : _that.y} ,1);
+
+
+
+			_this.position[_that.obj] = [];
+			_this.position[_that.obj][0] = _that.x;
+			_this.position[_that.obj][1] = _that.y;
+
+
+		};
+		//怪物死亡
+		monMove.prototype.stop = function(next) {
+
+			var _that = this;
+			clearInterval(_that.timer);
+
+			
+
+			//console.log( jc('#'+ _that.obj)._img.src.findNum().length )
+			//console.log( jc('#'+ _that.obj)._img.src.findNum()[jc('#'+ _that.obj)._img.src.findNum().length-1] );
+			var num = jc('#'+ _that.obj)._img.src.findNum()[jc('#'+ _that.obj)._img.src.findNum().length-1];
+
+			var img=new Image();
+			img.src="images/monster1"+ num +".png";
+			img.onload=function(){
+			jc.start('game', true);
+			jc.image(img, _that.x, _that.y, _this.monster.monDie[num-1][0], _this.monster.monDie[num-1][1]).id('die' +_that.obj ).level(1);
+			jc.start('game');}
+			//怪物污渍的去除
+			_that.changeOpacity = function () {
+				var changeNum = 1500/30;  //变化的速度
+				var i =0;
+				_that.timeOpacity = setInterval(function (argument) {
+					i = i + 1/changeNum;
+					jc('#die'+_that.obj).opacity(1-i);
+					if (i >= 1) {
+						clearInterval(_that.timeOpacity);
+						jc('#die'+_that.obj).del();
+					}
+				},30);
+				
+			}();
+
+			//怪物死亡删除
+			jc('#'+ _that.obj).del();
+
+			_this.monM[_that.obj] = undefined;
+			for ( a in _this.monM) {
+				if (_this.monM[a]) {
+					return false;
+				}
+			}
+			if (next) {
+
+			}else{
+				_this.score ++;
+				s('score').innerHTML =  'X' + _this.score;
+				_this.passNum ++ ;
+				_this.next();
+			}
+			
+
+
+		};
+
+		_this.next = function () {
+			//console.log('过关了')；
+			var _this = this;
+			
+
+			var t = _this.time[0];
+			clearTimeout(_this.timeC);
+			clearInterval(_this.timeDao);
+			s('time').innerHTML = _this.time[0] +'秒';
+			_this.timeDao = setInterval(function () {
+				t--;
+				s('time').innerHTML = t +'秒';
+			},1000);
+
+			_this.timeC = setTimeout(function (argument) {
+				s('time').innerHTML = '0秒';
+				//alert('时间到了！');
+				clearInterval(_this.timeDao);
+				for( a in _this.monM){
+					try{
+						_this.monM[a].stop( true );
+					}catch(err){
+						console.log(err.message);
+					}
+				}
+				/*s('end').style.display = 'block';
+				bind( s('end'), 'click' , function(){
+					this.style.display = 'none';
+					console.log(111);
+					endPlay();
+					
+				});*/
+				
+				document.ontouchstart = null;
+				_this.isShake = false;
+				endPlay();
+				if (_this.score <1) {
+					//console.log('你太需了');
+					s('end').getElementsByTagName('p')[0].innerHTML = '你太逊了！';
+
+				}else{
+					//console.log('恭喜你消灭了'+_this.score+'只怪物!')
+					s('end').getElementsByTagName('p')[0].innerHTML = '恭喜你消灭了'+_this.score+'只怪物!';
+				}
+			},_this.time[0]*1000);
+
+			_this.monM = {};
+			_this.position = {};
+
+			var i= 0;
+			//创建怪物
+			createMonster();
+			function createMonster(){
+				if (  i < _this.arrNum[_this.passNum] ) {
+					setTimeout(function () {
+						var R = getNum({ min : 160, max : 240, num : 1 })[0];
+						var angChange  = getNum({ min : 3, max :05, num : 1 })[0];
+
+						var mon = getNum({ min : 0, max : 4, num : 1 })[0];
+						_this.monster['mon' + mon]({canvas:'game' , id : 'mon'+i+_this.passNum});
+						//monMove( {obj : 'mon'+i+_this.passNum } );
+						_this.monM['mon'+i+_this.passNum] = new monMove( {obj : 'mon'+i+_this.passNum , R : R , angChange : angChange } );
+						i++;
+						createMonster();
+					},200);
+			
+				}
+
+			}
+
+		}
+
+	}
+
+
+	gamePage.prototype.bindEvent = function() {
+		
+		var _this = this;
+		bind( document, 'touchstart', function (ev) {
+			
+			var ev = ev || event;
+			ev.preventDefault();
+			var touch = ev.changedTouches[0];
+			var touchY = touch.pageY;
+			var touchX = touch.pageX;
+
+			for( a in _this.position){
+				//console.log(_this.position[a]);
+				//点击中怪物
+				if ( touchX > _this.position[a][0] && touchX < (_this.position[a][0] + 110) && touchY > _this.position[a][1] && touchY < (_this.position[a][1] + 110) ) {
+					//console.log('die');
+					//console.log( _this.monM[a]);
+					_this.monM[a].stop();
+					return false;
+				}
+
+				if (_this.isShake) {
+					shake();
+				}
+				
+
+				function shake() {
+					addClass(document.body , 'shake');
+					setTimeout(function (argument) {
+						removeClass(document.body , 'shake');
+					},1000);
+				}
+			}
+
+		})
+	};
+	gamePage.prototype.init = function() {
+		var _this = this;
+		_this.passNum = 0;   //关数
+		_this.positionMinX = 50;  //路径X最小值
+		_this.positionMinY = 50;  //路径y最小值
+		_this.positionMaxX = view().w - 160;  //路径X最大值
+		_this.positionMaxY = view().h - 160;  //路径y最大值
+		_this.runTime = 10000;  //绕屏一周所费时间
+		_this.speed = 30;  //变化间隔时间
+		_this.monM = {};   //怪物的对象
+		_this.position = {};  //怪物的位置
+		_this.score = 0;
+		s('score').innerHTML =  'X' + _this.score;
+
+		_this.isShake = true;
+	};
+
+	//gamePage();
+	/*var page = new gamePage();
+	page.bindEvent();
+	page.next();*/
+	var page = new gamePage();
+	bind( s('begin'), 'click' , function(){
+		this.style.display = 'none';
+
+		page.init();
+		page.bindEvent();
+		page.next();
+	});
+
+	function endPlay(){
+		
+
+		var win = document.createElement('div');
+		win.className = 'alert alert2';
+		win.id = 'end';
+		win.innerHTML = '<p></p><button>分享</button><button id="play_again">再来一次</button>';
+		
+		document.body.appendChild(win);
+
+		win.getElementsByTagName('button')[1].ontouchstart = function( ev ){ console.log(111);
+			
+			var ev = ev || event;
+			ev.stopPropagation ? ev.stopPropagation() : ev.cancelBubble = true;
+			remove(win);
+			page.init();
+			page.bindEvent();
+			page.next();
+
+		};
+
+	}
+
+	
+
+
+</script>
+</body>
+</html>
+

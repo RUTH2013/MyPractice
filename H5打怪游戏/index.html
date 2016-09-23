@@ -1,0 +1,231 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=640, maximum-scale=0.75, target-densityDpi=device-dpi">
+	<title>H5打怪游戏</title>
+	<link rel="stylesheet" type="text/css" href="css/animation.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="js/lex.js"></script>
+</head>
+<body>
+
+<script>
+    document.body.style.height = view().h + 'px';
+</script>
+
+<section class="bgColor sectionIn">
+	<div class="bg-page1"></div>
+	<div class="bg-start"></div>
+	<div class="main-page1">
+		<div class="rocket"></div>
+		<div class="thanks"></div>
+		<div class="withyou"></div>
+		<div class="miaov"></div>
+	</div>
+	<div class="ProgressBar"><span id="ProgressBar"></span></div>
+</section>
+<section class="bgColor2 sectionHid">
+	<div class="bg-circle-page2"></div>
+	<div class="bg-start2"></div>
+    <div class="main-page2">
+    	<div class="planet"></div>
+    	<div class="rocket2"></div>
+    	<div class="tower"></div>
+    	<div class="human"></div>
+        <div class="pirate"></div>
+    </div>
+    <div class="text"></div>
+</section>
+<section class="bgColor3 sectionHid">
+	<div class="bg-circle-page3"></div>
+    <div class="bg-start3"></div>
+    <div class="smork1"></div>
+    <div class="smork2"></div>
+    <div class="rocket3"></div>
+    
+    <div class="main-page3">
+        <div class="human1"></div>
+        <div class="human2"></div>
+        <div class="human3"></div>
+        <div class="human4"></div>
+        <div class="human5"></div>
+        <div class="pirate2"></div>
+        <div class="meteor"></div>
+    </div>
+    <div class="text3"></div>
+</section>
+<section class="bgColor4 sectionHid">
+	<div class="bg-circle-page4"></div>
+    <div class="main-page4">
+        <div class="smork4"></div>
+        <div class="smork5"></div>
+        <div class="rocket4"></div>
+        <button class="btn" id="start">开始游戏</button>
+    </div>
+    <div class="text4"></div>
+</section>
+
+<div class="arrow"></div>
+<div class="music musicRun" id="music">
+	<audio src="audio/bg.mp3" preload="auto" autoplay="true"></audio>
+</div>
+
+
+<script type="text/javascript">
+	var loadingArr = [
+		'images/miaov.png',
+		'images/thanks.png',
+		'images/withyou.png',
+		'images/rocket.png',
+		'images/arrow.png',
+		'images/star.png',
+		'images/run.png',
+		'images/stop.png',
+		'images/human.png',
+		'images/human2.png',
+		'images/human3.png',
+		'images/human4.png',
+		'images/human5.png',
+		'images/human6.png',
+		'images/lighthouse.png',
+		'images/monster1.png',
+		'images/monster2.png',
+		'images/monster3.png',
+		'images/monster4.png',
+		'images/monster11.png',
+		'images/monster12.png',
+		'images/monster13.png',
+		'images/monster14.png',
+		'images/pirate.png',
+		'images/pirate2.png',
+		'images/planet.png',
+		'images/planet3.png',
+		'images/rocket.png',
+		'images/rocket2.png',
+		'images/rocket3.png',
+		'images/smork.png',
+		'images/smork2.png',
+		'images/smork3.png',
+		'images/smork4.png',
+		'images/star.png',
+		'images/starLine.png',
+		'images/starotund.png',
+		'images/starSmall.png',
+		'images/stop.png',
+		'images/text1.png',
+		'images/text3.png',
+		'images/text4.png',
+		'images/time.png'
+	];
+
+	var loadBtn = false;
+
+	var loadNum= 0 ; 
+	for (var i = 0; i < loadingArr.length; i++) {
+		var aImg = document.createElement('img');
+		aImg.src = loadingArr[i];
+		aImg.onload = function(){
+			loadNum ++;
+			s('ProgressBar').style.width = Math.floor(loadNum/loadingArr.length*100) +'%';
+
+			if (loadNum == loadingArr.length ) {
+				remove( s('ProgressBar').parentNode  );
+				loadBtn = true;
+			}
+		}
+
+	}
+	
+</script>
+
+
+
+
+<script type="text/javascript">
+	/*setTimeout(function () {
+		addClass(getByClass(document ,'section','bgColor')[0] , 'sectionOut');
+	},2000);*/
+	changePage();
+	function changePage(){
+		var section = document.getElementsByTagName('section');
+		var pageDown =0;
+		var now = getByClass(document, 'section', 'sectionIn')[0];
+		var index = 0;
+		var off = true;
+
+		bind(document, 'touchstart', function(ev){
+			var ev = ev||event;
+			ev.preventDefault();
+			pageDown = ev.changedTouches[0].pageY;
+
+		});
+		bind(document, 'touchend', function(ev){
+			var ev = ev||event;
+			var pageUp = ev.changedTouches[0].pageY;
+
+			if (pageUp - pageDown > 40 && off &&loadBtn) {
+				/*console.log( '向下' );
+				removeClass(section[0], 'sectionOut');
+				addClass( section[0], 'sectionIn');*/
+				changeP( 1 );
+
+
+			}else if(pageUp - pageDown < -40  && off && loadBtn){
+				/*console.log( '向上' );
+				removeClass(section[0], 'sectionIn');
+				addClass( section[0], 'sectionOut');
+				addClass( section[0], 'sectionHid');*/
+				changeP( -1 );
+			}
+
+			function changeP( num ){
+
+				if(index == 0 && num == 1 ){  //首页向下划时  不变
+					return false;
+				}
+				if(index == 3 && num == -1 ){   //最后一页
+					window.location.href = 'game.html';
+				}
+
+				removeClass(section[index], 'sectionIn');
+				addClass(section[index], 'sectionOut');
+				off = false;
+				setTimeout(function(){
+					removeClass(section[index], 'sectionOut');
+					addClass(section[index], 'sectionHid');
+					removeClass(section[index - num], 'sectionHid');
+					addClass(section[index - num], 'sectionIn');
+					index = index - num;
+					off = true;
+				},600);
+
+
+			}
+
+		});
+
+	}
+	musicShow();
+	function musicShow(){
+		var au = s('music').getElementsByTagName('audio')[0];
+		bind(s('music') , 'touchstart', function(){
+
+			if (au.paused) {
+				au.play();
+				removeClass(s('music') , 'musicStop' ) ;
+				addClass(s('music') , 'musicRun' ) ;
+			}else{
+				au.pause();
+				removeClass(s('music') , 'musicRun' ) ;
+				addClass(s('music') , 'musicStop' ) ;
+			}
+
+		} ) ;
+	}
+
+</script>
+
+</body>
+</html>
