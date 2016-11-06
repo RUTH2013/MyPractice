@@ -1,0 +1,908 @@
+<!-- 音乐播放器-Ajax.html -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta content="telephone=no" name="format-detection" />
+	<meta name="wap-font-scale" content="no" />
+	<title>音乐播放器</title>
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<script src="js/htmlSize.js"></script>
+	<style type="text/css">
+		*{ margin: 0; padding: 0; }
+		html{ width: 100%; height: 100%; overflow: hidden; }
+		body{ width: 100%; height: 100%; font: .14rem/ 1.5 Tahoma,Arial,Roboto,"Droid Sans","Helvetica Neue","Droid Sans Fallback","Heiti SC",sans-self;  max-width: 640px;  margin: 0 auto;}
+		li{ list-style:none;}
+		textarea, button{ font-family: Tahoma,Arial,Roboto,"Droid Sans","Helvetica Neue","Droid Sans Fallback","Heiti SC",sans-self; }
+
+		/*音乐列表*/
+		#main{ width: 100%; height: 100%; position: relative; margin: 0 auto;}
+		#musicList{ width: 100%; height: 100%; background: url(img/bg.jpg) no-repeat; background-size:cover; }
+		.list-title{  width: 100%; height: .8rem; background: rgba(41,171,226,0.6); color: #fff; text-align: center; font-size: .4rem; line-height: .8rem; position: absolute; top: 0;}
+		.list_tip{ width: .32rem ; height: .32rem; background: url(img/tip.png) no-repeat; background-size:cover; position:absolute; right:.3rem; top:.24rem; }
+
+		.list-content{ width: 100%; position: absolute; top: .8rem; bottom:1.3rem; overflow: hidden; }
+		.list-content ul{ width: 100%; position: absolute; top: 0; left: 0; transform:translate3d(0,0,0);}
+		.list-content li{ width:100%; height:1.2rem; background:rgba(26,26,26,0.6); border-bottom:1px #999999 solid; box-sizing:border-box; }
+		.list-content li.active{ border-left: .1rem solid #29abe2; }
+
+
+		.list-audio{ width: 100%; height: 1.3rem;  position: absolute; bottom: 0;  background:url(img/list_audioBg.png) repeat-x; background-size: 0.1rem 1.3rem;}
+		.list-audio img{ float: left; width: 1rem; height: 1rem; margin:  .16rem 0 0 .3rem; border-radius: 50%; }
+		.list-audio img.move{  /*播放时的效果*/  animation:4s linear infinite audioImgMove; -webkit-animation:4s linear infinite audioImgMove; }
+		@keyframes audioImgMove{
+			0%{ transform:rotate(0deg);}
+			100%{ transform:rotate(360deg);}
+		}
+		@-webkit-keyframes audioImgMove{
+			0%{ -webkit-transform:rotate(0deg);}
+			100%{ -webkit-transform:rotate(360deg);}
+		}
+		.list-audioText{ float: left; }
+		.list-audioBtn{ float: right; width:.64rem; height:.64rem; background:url(img/list_audioPlay.png) no-repeat; background-size:cover; margin:.32rem .3rem 0 0;  display:none;}
+
+		.title{ color: #fff; font-size: .3rem; padding: .2rem 0 0 .4rem;}
+		.name{ color: #b3b3b3; font-size: .24rem;  padding: .04rem 0 0 .4rem;}
+
+		/*音乐详情页*/
+		#musicDetails{ width: 100%; height: 100%;  background:url(img/detailsBg.jpg) no-repeat; background-size:cover; position:absolute; top:0; left:0; z-index:10; background-position:bottom; overflow: hidden;}
+		.details-title{ width:100%; height:.8rem; background:rgba(41,171,226,0.6); font-size:.4rem; line-height:.8rem; text-align:center; color:white; position:absolute; top:0; }
+		.details-name span { font-size: .24rem; }
+		.details-tip{ width:.38rem; height:.2rem; background:url(img/details_arrow.png) no-repeat; background-size:cover; position:absolute; right:.3rem; top:.3rem; }
+
+		.details-lyric{ width: 100%; position: absolute; top: .8rem; bottom: 3rem; overflow: hidden; transition:.5s; -webkit-transition:.5s;}
+		.details-lyric ul { width: 100%; text-align: center; color: #fff; font-size: .28rem;transition:.2s; -webkit-transition:.2s;}
+		.details-lyric li{ margin-top: .28rem; }
+		.details-lyric li.active{ color:#00ffff; }
+
+		.details-audio{ width: 100%; height: 3rem; position: absolute; bottom: 0; left: 0; transition:.5s; -webkit-transition:.5s;}
+		.details-audioAll{ width:66%; margin:.4rem auto; position:relative; }
+		.details-audioPro{ width:100%; height:.04rem; background:white; }
+		.details-audioProUp{ width:50%; height:.04rem; background:#29abe2; position:absolute; left:0; top:0; }
+		.details-audioProBar{ width:.3rem; height:.3rem; background:#29abe2; border-radius:50%; position:absolute; left:50%; top:0; margin:-0.14rem; }
+		.details-nowTime{ font-size:.24rem; color:#b3b3b3; position:absolute; top:-0.16rem; left:-0.8rem; }
+		.details-allTime{ font-size:.24rem; color:#b3b3b3; position:absolute; top:-0.16rem; right:-0.8rem; }
+		.details-play{ width:1.1rem; height:1.1rem; background:url(img/details_play.png) no-repeat; background-size:cover; position:absolute; left:50%; margin-left:-0.54rem; top:0.6rem; }
+		.details-prev,.details-next{ width:.74rem; height:.74rem; background:url(img/details_prev.png) no-repeat; background-size:cover; position:absolute; top:.74rem; }
+		.details-prev{ left:.2rem;  }
+		.details-next{ background-image: url(img/details_next.png) ;  right:.2rem;  }
+
+		.details-btn{ width:100%; position:absolute; bottom:.2rem; text-align:center; }
+		.details-btn li{  width:.16rem; height:.16rem; background:#29abe2; border-radius:.08rem; display:inline-block; margin:0.04rem; }
+		.details-btn li.active{ width: .4rem; }
+
+		/* 留言页面 */
+		.details-message{ width:80%; position:absolute; top:.8rem; bottom:1rem; margin-left:10%; transition:.5s; -webkit-transition:.5s; }
+		.details-message textarea{ width:100%; height:2rem; background:#9babb2; border-radius:0.1rem; margin-top:.2rem; padding: 0.12rem; box-sizing: border-box; line-height: .32rem;}
+		::-webkit-input-placeholder{ color:#6c6c6c; }
+		::-moz-input-placeholder{ color::#6c6c6c;}
+		.details-message button{  width:100%; height:.6rem; color:white; background:#29abe2; border-radius:.1rem; border:none;   }
+		.details-message ul{  width:100%; font-size:.24rem; }
+		.details-message li{ background:rgba(26,26,26,0.6); border-radius:.1rem; padding:.2rem; color:white; float:left; clear:both; margin-top:.2rem; transition:1s; -webkit-transition:1s; }
+
+		/* 加载层 loading 做出加载的样式 */
+		#loading{  width:100%; height:100%; background:black; position:absolute; left:0; top:0; z-index:20; overflow:hidden; }
+		.content1 , .content2{ width:.6rem; height:.6rem; position:absolute; left:50%; top:50%; margin:-0.3rem;}
+		.content1 div , .content2 div{ width:.16rem; height:.16rem; background:white; position:absolute; border-radius:50%; animation:2s linear infinite loadingMove; -webkit-animation:2s linear infinite loadingMove;}
+		.arc1{ left:0; top:0;}
+		.arc2{ right:0; top:0;}
+		.arc3{ right:0; bottom:0;}
+		.arc4{ left:0; bottom:0;}
+		.content2{ transform:rotate(45deg); -webkit-transform:rotate(45deg);}
+		/*实现转圈的效果   负号是提前的作品*/
+		.content1 .arc1{ animation-delay:-0.1s;}  
+		.content2 .arc1{ animation-delay:-0.3s;}
+		.content1 .arc2{ animation-delay:-0.5s;}
+		.content2 .arc2{ animation-delay:-0.7s;}
+		.content1 .arc3{ animation-delay:-0.9s;}
+		.content2 .arc3{ animation-delay:-1.1s;}
+		.content1 .arc4{ animation-delay:-1.3s;}
+		.content2 .arc4{ animation-delay:-1.5s;}
+		/*实现转圈的效果 - end*/
+		@keyframes loadingMove{
+			0%{ transform:scale(1);}
+			50%{ transform:scale(0);}
+			100%{ transform:scale(1);}
+		}
+		@-webkit-keyframes loadingMove{
+			0%{ -webkit-transform:scale(1);}
+			50%{ -webkit-transform:scale(0);}
+			100%{ -webkit-transform:scale(1);}
+		}
+
+
+	</style>
+
+
+	<script src="js/jquery-2.1.3.min.js"></script>
+	<script src="js/data.js"></script>
+
+	<script type="text/javascript">
+		
+		$(function () {
+
+			//屏幕大小的处理
+			var viewWidth = $(window).width();
+			var viewHeight = $(window).height();
+			var desWidth = 640;  // 设计稿的宽度
+
+			/* 音乐列表页面的元素 */
+			var $main = $('#main');
+			var $listContent = $('#listContent');
+			var $listContentUl = $('#listContentUl');
+			var $listTitle = $('#listTitle');
+			var $listAudio = $('#listAudio');
+			var $listAudioImg = $('#listAudioImg');
+			var $listAudioText = $('#listAudioText');
+			var $listAudioBtn = $('#listAudioBtn');
+
+			/* 音乐详情页面的元素 */
+			var $musicDetails = $('#musicDetails');
+			var $detailsTitle = $('#detailsTitle');
+			var $detailsName = $('#detailsName');
+			var $detailsAudioProUp = $('#detailsAudioProUp');
+			var $detailsAudioProBar = $('#detailsAudioProBar');
+			var $detailsNowTime = $('#detailsNowTime');
+			var $detailsAllTime = $('#detailsAllTime');
+			var $detailsPlay = $('#detailsPlay');
+			var $detailsPrev = $('#detailsPrev');
+			var $detailsNext = $('#detailsNext');
+			var $detailsLyric = $('#detailsLyric');
+			var $detailsLyricUl = $('#detailsLyricUl');
+			var $detailsBtn = $('#detailsBtn');
+			var $detailsAudio = $('#detailsAudio');
+
+			var $detailsMessage = $('#detailsMessage');
+			var $detailsMessageTa = $('#detailsMessageTa');
+			var $detailsMessageBtn = $('#detailsMessageBtn');
+			var $detailsMessageUl = $('#detailsMessageUl');
+
+
+
+			var oAudio = $('#audio1').get(0); // audio 都是原生的操作
+			var $loading = $('#loading');
+
+
+			var touchstart = 'touchstart';  
+			var touchmove = 'touchmove';
+			var touchend = 'touchend';
+
+			var id = 0;  // 音乐列表的 id 
+			var index = 0; // 音乐列表的索引 ->存入当前选中音乐的索引   用来在切换上下一首歌时 使用
+
+			
+
+			function init() { ////整个项目的初始化
+				loadingFn();
+				device();
+				musicList.init();
+				musicDetails.init();
+				musicAudio.init();
+			}
+			function loadingFn(){    //loading效果  加载
+				// 主要是图片的加载
+				var arr = ['bg.jpg','detailsBg.jpg','details_pause.png','details_play.png','details_next.png','details_prev.png','list_audioBg.png'];
+				var iNum = 0;
+				$.each(arr,function(i,img){
+					var objImg = new Image();
+					objImg.onload = function(){  // 图片加载完
+						iNum++;
+						if(iNum == arr.length){
+							$loading.animate({opacity:0},1000,function(){
+								$(this).remove();
+							});
+						}
+					};
+					objImg.onerror = function(){  // 图片加载失败 --> 直接进入后续操作
+						$loading.animate({opacity:0},1000,function(){
+							$(this).remove();
+						});
+					};
+					objImg.src = 'img/' + img;
+				});
+			}
+
+			function device(){   //兼容PC和移动端
+				
+				/*if (viewWidth>desWidth) {
+					$main.css('width','640px');
+				}*/
+
+				var isMobile = /Mobile/i.test(navigator.userAgent); // 匹配移动端的标识 -> Mobile
+
+				if(!isMobile){  //在PC端的情况下 事件变化
+					touchstart = 'mousedown';
+					touchmove = 'mousemove';
+					touchend = 'mouseup';
+				}
+			
+				// 屏幕发生改变时触发 改变屏幕大小 -- > 针对横竖屏
+				$(window).resize(function(){
+					viewWidth = $(window).width();
+					viewHeight = $(window).height();
+					musicDetails.sildeDown();
+				});
+			}
+
+			var musicList = (function () { //音乐列表页操作
+
+				var prevY = 0; // 上一次鼠标按下时的地方
+				var downY = 0; //  鼠标按下时的地方 
+				var downT = 0; //  鼠标按下时的地方 top值
+
+				var parentH =  $listContent.height(); //父级容器的高度
+				var childH = $listContentUl.height(); //子级容器的高度， Ul的高度
+
+				var onoff1 = true;  // 控制列表滑动到头的情况
+				var onoff2 = true;  // 控制列表滑动到尾的情况
+				var onoff3 = true;  // 区分滑屏还是点击列表
+
+				var timer = null ; // 定时器 在 touchend 中使用
+
+				var speed = 0;  // 滑屏的速度；
+				
+				function init() {  //初始化
+					data();
+					bind();
+					moveScroll();
+				}
+
+				function data() {  // 音乐数据
+					
+					/*$.ajax({
+						url : "php/musicList.php",
+						type : 'GET',
+						dataType : 'json',
+						success : function(data){
+							
+							$.each(data,function(i,obj){
+								var $li = '<li musicId="'+(obj.id)+'"><h3 class="title">'+(obj.musicName)+'</h3><p class="name">'+(obj.name)+'</p></li>';
+								$listContentUl.append($li);
+							});
+							childH = $listContentUl.height(); // 重新指定高度
+							
+						}
+						
+					});*/
+
+					$.each(dataObj,function(i,obj){
+						var $li = '<li musicId="'+(obj.id)+'"><h3 class="title">'+(obj.musicName)+'</h3><p class="name">'+(obj.name)+'</p></li>';
+						$listContentUl.append($li);
+					});
+					childH = $listContentUl.height(); // 重新指定高度
+					
+				}
+
+				//事件操作函数
+				function bind() {
+					// 列表选中操作
+					$listContentUl.delegate('li',touchend,function(){
+						if(onoff3){
+							$(this).attr('class','active').siblings().attr('class','');
+							id = $(this).attr('musicId'); // 音乐的 iD 
+							musicAudio.loadMusic(id); // 载入音乐
+							index = $(this).index() ; // 存入当前选中音乐的索引
+
+						}
+					});	
+
+					$listAudio.on(touchstart,function(){  // 点击main底部音乐条可以 切换到 详情页
+						if (id) { // 当选中歌曲后才可以展开详情页
+							musicDetails.sildeUp();
+						}
+						
+						
+					});			
+				}
+
+				function moveScroll() { // 滑屏
+					$(document).on(touchstart,function(ev){
+						ev.preventDefault();
+					});
+					$listContentUl.on(touchstart, function(ev){
+
+						if(parentH > childH){return false;} // 当列表高度小于容器高度时，就不存在滑动效果 
+
+						var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;  // 兼容pc 端 和移动端
+						
+						var This = this;
+						downY = touch.pageY;  // 鼠标按下时的地方
+						prevY = touch.pageY;  // 上一次鼠标按下时的地方
+						downT = $(this).position().top;
+
+						onoff1 = true;
+						onoff2 = true;
+						onoff3 = true;
+
+						$(document).on(touchmove + ".move",function(ev){
+
+							onoff3 = false;
+							
+							var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;
+
+							var iTop = $(This).position().top; // 当前列表容器的top值
+
+							speed = touch.pageY - prevY; // 滑动的速度  最后一次 - 前一次
+							prevY = touch.pageY;
+
+							if (iTop >= 0 ) { // 列表到头 又往下滑动的情况下
+
+								// 速度变慢 + 滑动距离变小
+								if (onoff1) {
+									onoff1 = false;
+									downY = touch.pageY;
+								}
+								$(This).css('transform','translate3d(0,'+(touch.pageY - downY)/3+'px,0)');
+
+							}else if (iTop <= (parentH- childH) ) { // 列表到尾部 又往上滑动的情况下
+								// 速度变慢 + 滑动距离变小
+								if(onoff2){
+									onoff2 = false;
+									downY = touch.pageY;
+								}
+								$(This).css('transform','translate3d(0,'+((touch.pageY - downY)/3 + (parentH - childH))+'px,0)'); 
+
+							}else{ // 正常情况
+								$(This).css("transform","translate3d(0,"+ (touch.pageY - downY + downT) +"px,0)");
+							}
+
+
+							
+						
+						});
+						
+						$(document).on(touchend + ".move",function(ev){
+						
+							$(this).off(".move");  // 取消事件move（命名空间）
+
+							if(!onoff3){ // 当在滑屏的情况下触发
+
+								clearInterval(timer);
+								timer = setInterval(function(){
+									var iTop = $(This).position().top;
+									// 运动停止的条件 ： speed 小  ||   到头有滑动了50 || 到尾有滑动了50
+									if ( Math.abs(speed) <= 1 ||  iTop > 50 || iTop < parentH - childH - 50) {
+
+										clearInterval(timer);
+										if ( iTop >= 0) { // 列表到头 又往下滑动的情况下
+											$(This).css('transition','.2s');
+											$(This).css('transform','translate3d(0,0,0)');
+
+										}else if(iTop <= parentH - childH){   // 列表到尾部 又往上滑动的情况下
+											$(This).css('transition','.2s');
+											$(This).css('transform','translate3d(0,'+(parentH - childH)+'px,0)');
+										}
+
+									}else{
+										speed *= 0.9;
+										$(This).css("transform","translate3d(0,"+ ( iTop+speed ) +"px,0)");
+									}
+
+								},13);
+							}
+
+						});
+						
+						return false; //阻止默认行为
+					});
+
+					//当transiton 结束触发
+					$listContentUl.on('transitonend webkitTransitionEnd',function(){
+						$(this).css('transition',''); // 去掉运动时间
+					});
+				}
+
+				function show(sName,sMusicName,sImg) { // 底部音乐条的显示（数据的更改）
+					$listAudioImg.attr('src','img/'+sImg);
+					$listAudioText.find('h3').html(sMusicName);
+					$listAudioText.find('p').html(sName);
+					$listAudioBtn.show(); // 播放按钮显示
+				}
+
+				return { 
+					init : init , 
+					show : show 
+				};
+
+			})();
+
+			var musicDetails = (function(){    //音乐详情页操作
+
+				var re = /\[[^[]+/g; // 用来拆分歌词 通过[]
+				var arr = [];  // 存放拆分后的歌词
+
+				var $li = null;  // 歌词句
+				var iLiH = 0;    // li 的高度 
+				var downX = 0;   // 滑屏时 按下的x 位置
+				var range = 20;  // 左右滑屏的范围 （最小值）
+				var timer = null; // 用来控制留言滚动
+
+				function init(){    //初始化
+					$musicDetails.css('transform','translate3d(0,'+(viewHeight)+'px,0)'); // 详情页初始在页面下面
+					$detailsMessage.css('transform','translate3d('+(viewWidth)+'px,0,0)'); // 留言页面在页面右侧
+					bind();
+				}
+
+				function sildeUp() {    //详情页的向上展开 打开
+					$musicDetails.css('transition','.5s');
+					$musicDetails.css('transform','translate3d(0,0,0)');
+				}
+				function sildeDown(){   //详情页的向下收缩  关闭
+					$musicDetails.css('transform','translate3d(0,'+(viewHeight)+'px,0)');
+					// 将视图还原到歌词页面
+					$musicDetails.one('transitionend weikitTransitionEnd',function(){
+						$detailsLyric.add($detailsAudio).css('transform','translate3d(0,0,0)');
+						$detailsMessage.css('transform','translate3d('+(viewWidth)+'px,0,0)');
+						$detailsBtn.find('li').eq(0).attr('class','active').siblings().attr('class','');
+					});
+				}
+
+				function bind() { //事件操作   详情页的收缩 +  左右切换滑屏
+					// 详情页的收缩 
+					$detailsTitle.on(touchstart,function(){
+						sildeDown();
+					});
+
+					//左右切换滑屏
+					$musicDetails.on(touchstart,function(ev){
+						var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;
+						downX = touch.pageX;  // 滑屏时 按下的x 位置
+
+						$(document).on(touchend+'.move',function(ev){
+							$(this).off('.move');
+							var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;
+
+							if( touch.pageX - downX < -range ){   // ←  向左滑
+								$detailsLyric.add($detailsAudio).css('transform','translate3d('+(-viewWidth)+'px,0,0)');
+								$detailsMessage.css('transform','translate3d(0,0,0)');
+								$detailsBtn.find('li').eq(1).attr('class','active').siblings().attr('class','');
+
+								loadMessage();  // 载入留言
+								clearInterval(timer);
+								timer = setInterval(scrollMessage,3000);  // 滚动留言
+							}
+							else if( touch.pageX - downX > range ){   //→ 向右滑动
+								$detailsLyric.add($detailsAudio).css('transform','translate3d(0,0,0)');
+								$detailsMessage.css('transform','translate3d('+(viewWidth)+'px,0,0)');
+								$detailsBtn.find('li').eq(0).attr('class','active').siblings().attr('class','');
+
+								clearInterval(timer);
+							}
+						});
+					});
+
+					// 点击按钮添加留言
+					$detailsMessageBtn.on(touchstart,function(){
+						addMessage();
+					});
+
+					// textarea 文本框事件的还原
+					$detailsMessageTa.on(touchstart,function(){
+						this.focus();//还原之前在 列表页面 滑屏事件中 取消事件默认行为
+					});
+				}
+
+				function show(sName,sMusicName,sLyric) { // 显示 音乐详情数据的显示 
+					$detailsName.html(sMusicName + ' <span>'+ sName +'</span>');  // 头部信息的加载
+
+					/*歌词数据的加载*/
+					$detailsLyricUl.empty().css('transform','translate3d(0,0,0)'); // 清空歌词数据
+
+					//console.log(sLyric);
+					arr = sLyric.match(re);// 存放拆分后的歌词
+					//将arr 设置成二维数组
+					for(var i=0;i<arr.length;i++){
+						arr[i] = [formatTime(arr[i].substring(0,10)) , arr[i].substring(10).trim()];
+					}
+					//console.log(arr);
+					
+					// 创建歌词
+					for(var i=0;i<arr.length;i++){
+						$detailsLyricUl.append('<li>'+arr[i][1]+'</li>');
+					}
+
+					$li = $detailsLyricUl.find('li');
+					$li.first().attr('class','active');
+					iLiH = $li.first().outerHeight(true);
+
+				}
+
+				function formatTime(num){   //格式日期  处理歌词里的时间
+					num = num.substring(1,num.length-1);  // [00:00.00] --> 00:00.00
+					var arr = num.split(':');  // 00 , 00.00
+					return (parseFloat(arr[0]*60) + parseFloat(arr[1])).toFixed(2); //toFixed 保留两位
+				}
+
+				function scrollLyric( ct ){    //滚动歌词   参数是当前时间
+					for(var i=0;i<arr.length;i++){
+						// 判断当前时间是什么歌词  
+						if( i != arr.length - 1 && ct > arr[i][0] && ct < arr[i+1][0] ){
+							// 当前歌词
+							$li.eq(i).attr('class','active').siblings().attr('class','');
+
+							if(i>4){ //到第五行才开始移动
+								$detailsLyricUl.css('transform','translate3d(0,'+(-iLiH*(i-4))+'px,0)');
+							}
+							else{
+								$detailsLyricUl.css('transform','translate3d(0,0,0)');
+							}
+						}
+						// 当是最后一句歌词时
+						else if(i == arr.length-1 && ct > arr[i][0]){
+							$li.eq(i).attr('class','active').siblings().attr('class','');
+							$detailsLyricUl.css('transform','translate3d(0,'+(-iLiH*(i-4))+'px,0)');
+						}
+					}
+				}
+
+				function loadMessage(){   //载入留言
+					$detailsMessageUl.empty();  // 清空先前加载的数据
+
+					/*$.ajax({
+						url : 'php/loadMessage.php',
+						type : 'GET',
+						dataType : 'json',
+						data : { mid : id },
+						success : function(data){
+							$.each(data,function(i,obj){
+								var $li = $('<li>'+obj.text+'</li>');
+								$detailsMessageUl.prepend($li);// 数据添加到头部
+							});
+						}
+					});	*/
+					
+					$.each(messageObj,function(i,obj){
+						if (obj.mid == id) {
+							var $li = $('<li>'+obj.text+'</li>');
+							$detailsMessageUl.prepend($li); // 数据添加到头部
+						}
+
+						
+
+					});
+
+				}
+				function addMessage(){    //添加留言
+					var value = $detailsMessageTa.val();
+					$detailsMessageTa.val('');
+					/*$.ajax({
+						url : 'addMessage.php',
+						type : 'POST',
+						dataType : 'json',
+						data : { mid : id , text : value},
+						success : function(data){
+							if(data.code){
+								var $li = $('<li>'+data.message+'</li>');
+								$detailsMessageUl.prepend($li);
+							}
+						}
+					});*/
+
+					/* data对象操作 */
+					var num = messageObj.length;
+					messageObj.push({ "id" : num, "mid" : id, "text" : value });
+					var $li = $('<li>'+value+'</li>');
+					$detailsMessageUl.prepend($li);
+				}
+
+				function scrollMessage() {  //滚动留言
+					// 将留言最后一个剪切到头部
+					var $last = $detailsMessageUl.find('li').last();
+					$detailsMessageUl.prepend($last);
+					$last.css('opacity',0);
+					setTimeout(function(){
+						$last.css('opacity',1);
+					},200);
+				}
+
+				return {
+					init : init,
+					sildeUp : sildeUp,
+					sildeDown : sildeDown,
+					show : show,
+					scrollLyric : scrollLyric,
+					loadMessage : loadMessage
+				};
+
+			})();
+
+			var musicAudio = (function(){    //音乐播放器操作
+
+				var onoff = true ;  // 控制音乐是否播放
+				var timer = null;  // 定时器 控制 播放时间进度条
+				var scale = 0;     // 播放时间/ 总时间 的比例
+				var disX = 0;      // 进度条 bar 的 X 轴距离 -->  移动的差值
+				var parentW = $detailsAudioProBar.parent().width(); // 进度条的总长度
+
+
+				function init() {  // 初始化
+					bind();
+				}
+				function loadMusic(id){   //载入音乐
+					/*$.ajax({
+						url : 'php/musicAudio.php',
+						type : 'GET',
+						dataType : 'json',
+						async : false,     // 同步下 苹果下能够播放 
+						data : { id : id },
+						success : function(data){
+							show(data);
+						}
+					});*/
+					var data = null;
+					$.each(dataObj,function(i,obj){
+						if (obj.id == id ) {
+							data = {"id" : id, "name": obj.name , "musicName" :obj.musicName ,  "img" : obj.img, "audio" : obj.audio ,"lyric" : obj.lyric};
+						}
+					});
+					
+					if (data) {
+						// console.log("有数据");
+						// console.log(data);
+						show(data);
+					}
+
+				}
+				function show(obj) {  // 显示 音乐数据的显示
+					//console.log(obj);
+					var sName = obj.name;
+					var sMusicName = obj.musicName;
+					var sImg = obj.img;
+					var sAudio = obj.audio;
+					var sLyric = obj.lyric;
+					
+
+
+					musicList.show(sName,sMusicName,sImg); // 传入musicList页面的 音乐名 歌手名 图片
+					musicDetails.show(sName,sMusicName,sLyric); // 传入详情页的   音乐名 歌手名 歌词
+
+					// 音乐播放
+					oAudio.src = 'img/'+sAudio; 
+					play();
+					$(oAudio).one('canplaythrough',function(){  //播放  在不停下来进行缓冲的情况下持续播放指定的音频/视频时，会发生 canplaythrough 事件。
+						$detailsAllTime.html( formatTime(oAudio.duration) ); // 总时间计算
+					});
+					$(oAudio).one('ended',function(){ // 当一首音乐播放结束 触发 ended 事件 执行下一首歌
+						next();
+					});
+				}
+
+				function play(){   //音乐播放
+					onoff = false;
+
+					$listAudioImg.addClass('move');
+					$listAudioBtn.css('backgroundImage','url(img/list_audioPause.png)');
+					$detailsPlay.css('backgroundImage','url(img/details_pause.png)');
+
+					oAudio.play();
+
+					playing();
+					clearInterval(timer);
+					timer = setInterval(playing,1000);
+				}
+				function pause(){  //音乐暂停
+					onoff = true;
+
+					$listAudioImg.removeClass('move');
+					$listAudioBtn.css('backgroundImage','url(img/list_audioPlay.png)');
+					$detailsPlay.css('backgroundImage','url(img/details_play.png)');
+
+					oAudio.pause();
+
+					clearInterval(timer);
+				}
+				function playing(){    //播放进行中  进度条
+					$detailsNowTime.html( formatTime(oAudio.currentTime) );
+					scale = oAudio.currentTime / oAudio.duration; // 播放时间/ 总时间 的比例
+					$detailsAudioProUp.css('width',scale * 100 + '%');
+					$detailsAudioProBar.css('left',scale * 100 + '%');
+
+					musicDetails.scrollLyric(oAudio.currentTime); //混动歌词
+				}
+
+				function bind() { // 事件   点击播放与暂停  + 进度条的拖拽处理 
+					// 处理 点击播放与暂停
+					$listAudioBtn.add($detailsPlay).on(touchstart,function(){
+						if(onoff){
+							play();
+						}else{
+							pause();
+						}
+						return false; // 阻止冒泡 到 详情页向上滑屏事件
+					});
+
+					// 进度条的拖拽处理 
+					$detailsAudioProBar.on(touchstart,function(ev){
+						var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;
+						var This = this;
+						disX = touch.pageX - $(this).position().left; // 移动的差值
+
+						clearInterval(timer);
+
+						$(document).on(touchmove+'.move',function(ev){
+							var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;
+							var L = touch.pageX - disX;
+							// 拖拽范围的限制
+							if(L<=0){
+								L = 0;
+							}
+							else if(L >= parentW){
+								L = parentW;
+							}
+							$(This).css('left', L );
+							scale = L/parentW;
+						});
+
+						$(document).on(touchend+'.move',function(){
+							$(this).off('.move');
+							oAudio.currentTime = scale * oAudio.duration; // 改变当前播放到的时间   ==>本地的mp4.用服务器端访问 oAudio.currentTime 设置无效,  把mp4上传到服务器端， 然后用服务器端完成的地址访问; 或者在本地访问
+							//console.log(oAudio.currentTime);
+							playing();
+							clearInterval(timer);
+							timer = setInterval(playing,1000);
+
+						});
+						return false;
+					});
+
+					// 上一首按钮的操作方法		
+					$detailsPrev.on(touchstart,function(){
+						prev();
+					});
+					// 下一首按钮的操作方法	
+					$detailsNext.on(touchstart,function(){
+						next();
+					});
+				}
+
+				function next() { // 切换到下一首歌
+					var $li = $listContentUl.find('li');
+					index = index == $li.length - 1 ? 0 : index + 1; // index 是否为 最后一个
+					id = $li.eq(index).attr('musicId');              // id 就为下一首歌的Id
+					$li.eq(index).attr('class','active').siblings().attr('class',''); //改变列表的状态
+					loadMusic(id); // 加载下一首歌
+					musicDetails.loadMessage(); // 加载下一首歌的留言
+				}
+				function prev() { // 切换到上一首歌
+					var $li = $listContentUl.find('li');
+					index = index == 0 ? $li.length - 1 : index - 1; // index 是否为 最后一个 index-1上一首
+					id = $li.eq(index).attr('musicId');              // id 就为上一首歌的Id
+					$li.eq(index).attr('class','active').siblings().attr('class',''); //改变列表的状态
+					loadMusic(id);// 加载上一首歌
+
+				}
+
+				function formatTime(num) { // 格式日期  - - 时间的计算
+					num = parseInt(num);
+					var iM = Math.floor(num%3600/60); // 分的计算
+					var iS = Math.floor(num%60);  // 秒的计算
+					return toZero(iM) + ':' + toZero(iS);
+				}
+				function toZero(num){    // 时间 补零操作
+					if(num < 10){
+						return '0' + num;
+					}
+					else{
+						return '' + num;
+					}
+				}
+
+
+
+				return {
+
+					init : init,
+					loadMusic : loadMusic
+				};
+			})();
+
+			init();
+			
+		});
+
+	</script>
+
+</head>
+<body>
+
+<div id="main">
+	<!-- 加载层 loading -->
+	<div id="loading">
+    	<div class="content1">
+        	<div class="arc1"></div>
+            <div class="arc2"></div>
+            <div class="arc3"></div>
+            <div class="arc4"></div>
+        </div>
+        <div class="content2">
+        	<div class="arc1"></div>
+            <div class="arc2"></div>
+            <div class="arc3"></div>
+            <div class="arc4"></div>
+        </div>
+    </div>	
+	<!-- 音乐列表 -->
+	<div id="musicList">
+		<!-- 头部 -->
+		<div class="list-title"  id="listTitle">音乐播放器<span class="list_tip"></span></div>
+		<!-- 内容列表 -->
+		<div class="list-content"  id="listContent">
+        	<ul id="listContentUl">
+            	<!-- <li>
+                	<h3 class="title">逆战</h3>
+                	<p class="name">张杰</p>
+                </li> -->
+                
+            </ul>
+		</div>
+		<!-- 底部 -->
+		<div  id="listAudio" class="list-audio">
+			<img id="listAudioImg" src="img/hongchenkezhan.jpg">
+			<div id="listAudioText" class="list-audioText">
+				<h3 class="title">MyPersonal</h3>
+				<p class="name">音乐播放器</p>
+			</div>
+			<div  id="listAudioBtn" class="list-audioBtn"></div>
+		</div>
+	</div>
+
+	<!-- 音乐详情页 -->
+	<div id="musicDetails">
+		<!-- 头部 -->		
+    	<div id="detailsTitle" class="details-title">
+        	<div id="detailsName" class="details-name"><!-- 逆战 <span> 张杰 </span>--> </div>
+            <span class="details-tip"></span>
+        </div>
+		<!-- 歌词 -->
+        <div id="detailsLyric" class="details-lyric">
+        	<ul id="detailsLyricUl">
+            	<li>歌词测试文字</li>
+                <li class="active">歌词测试文字</li>
+                <li>歌词测试文字</li>
+                <li>歌词测试文字</li>
+         	</ul>
+        </div>
+        <!-- 音乐进度条 时间 + 按钮 -->
+        <div  id="detailsAudio"  class="details-audio" >
+        	<div class="details-audioAll">
+        		<!-- 进度条 -->
+            	<div class="details-audioPro">
+                	<div id="detailsAudioProUp" class="details-audioProUp"></div>
+                    <div id="detailsAudioProBar" class="details-audioProBar"></div>
+                </div>
+                <!--  时间 （ 现在时间 总时间 ） -->
+                <div id="detailsNowTime" class="details-nowTime">00:00</div>
+                <div id="detailsAllTime" class="details-allTime">00:00</div>
+
+        		<!-- 按钮 （ 暂停 下一首 上一首 ） -->
+                <div id="detailsPlay" class="details-play"></div>
+                <div id="detailsPrev" class="details-prev"></div>
+                <div id="detailsNext" class="details-next"></div>
+            </div>
+        </div>
+        <!-- 翻页按钮 -->
+        <ul id="detailsBtn" class="details-btn">
+        	<li class="active"></li>
+            <li></li>
+        </ul>
+        <!-- 留言页面 -->
+        <div id="detailsMessage" class="details-message">
+        	<textarea id="detailsMessageTa" placeholder="文明上网，理性留言"></textarea>
+        	<button id="detailsMessageBtn">发表</button>
+            <ul id="detailsMessageUl">
+            	<!-- <li>留言</li>
+                <li>留言</li>
+                <li>留言</li> -->
+            </ul>
+        </div>
+	</div>
+</div>
+<!-- 音乐器 -->
+<audio id="audio1"></audio>
+
+</body>
+</html>
