@@ -1,0 +1,46 @@
+
+
+<!--底部-->
+<div class="foot-bar" flex="main:left cross:center box:mean">
+    <p style="display: none">{{url}}</p>
+    <a href="/course" class="active">
+        <span>
+            <img class="active" src="/public/dist/images/main/icon_course.png">
+            <img src="/public/dist/images/main/icon_check_course.png">
+        </span><br>
+        <span>课程</span>
+    </a>
+    <a href="/material">
+        <span>
+            <img class="active" src="/public/dist/images/main/icon_text.png">
+            <img src="/public/dist/images/main/icon_check_text.png">
+        </span><br>
+        <span>干货</span>
+    </a>
+    <a href="/quiz">
+        <span>
+            <img class="active" src="/public/dist/images/main/icon_question.png">
+            <img src="/public/dist/images/main/icon_check_question.png">
+        </span><br>
+        <span>问答</span>
+    </a>
+    <a href="/personal">
+        <span>
+            <img class="active" src="/public/dist/images/main/icon_me.png">
+            <img src="/public/dist/images/main/icon_check_me.png">
+        </span><br>
+        <span>个人</span>
+    </a>
+</div>
+<script>
+    $(function () {
+        var url = $('.foot-bar').find('p').html();
+        $.each($('.foot-bar').find('a'), function (item,val) {
+            var subUrl = $(this).attr("href").substr(1);
+            if (url == subUrl){
+                $(this).addClass('active').siblings().removeClass('active');
+            }
+        });
+    })
+</script>
+<!--底部:over-->

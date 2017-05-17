@@ -1,0 +1,83 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+
+
+<header>
+    <div class=" header-title">
+        <strong>干货</strong>
+    </div>
+</header>
+<div class="container page-top-bottom">
+    <div class="materialList clear">
+        {% for materials in materialList %}
+        <div class="materialBox">
+            <a  href="/material/list?id={{materials.typeId}}" class="title clear">
+                <span class="fl"></span><h4 class="fl">{{materials.typeName}}</h4>
+                <i class="fr">更多</i>
+            </a>
+            {% for material in materials.material %}
+            <div  class="materialItem clear">
+                <a href="/material/detail?id={{material._id.toString()}}">
+                    <div class="itemTag imgParent fl">
+                        <img class="showImg"  src="" data-url="{{material.img}}" alt="">
+                        <div class="imgContent" style="display: none;">{{material.content}}</div>
+                    </div>
+                </a>
+                <div class="itemCon fl">
+                    <a href="/material/detail?id={{material._id.toString()}}">
+                        <h4>{{material.title}}</h4>
+                        <p>{{material.description}}</p>
+                    </a>
+
+                    {% if material.isCollect %}
+                    <a href="/material/collect/delete?id={{material._id.toString()}}" class="icon icon-collect active"><i></i><span>{{material.collector.length}}</span></a>
+                    {% else %}
+                    <a href="/material/collect/add?id={{material._id.toString()}}" class="icon icon-collect"><i></i><span>{{material.collector.length}}</span></a>
+                    {% endif %}
+
+                    <div class="icon icon-eye active">
+                        <i></i><span>{{material.views}}</span>
+                    </div>
+
+
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    $(function () {
+        // 图片设置
+        var $img = $('.showImg');
+        $.each($img, function (eq,item) {
+            var src;
+            if ($(this).attr('data-url') == ''){
+                src = showImg($(this).next('.imgContent').html());
+            }else{
+                src = showImg($(this).attr('data-url'));
+            }
+            if(src == ''){
+                src='/public/dist/images/main/content/0.jpg';
+            }
+            $(this).attr('src',src);
+            limitImg($(this),$('.imgParent')); // 大小控制
+        });
+
+    });
+</script>
+<!-- 引入子集 -->
+{% include 'footer.html' %}
+{% endblock %}
+
+
+

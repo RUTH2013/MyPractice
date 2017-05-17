@@ -1,0 +1,33 @@
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top breadcrumb clear ">
+    <span><a href="/admin/usersList">用户管理</a></span> /
+    <span class="active">添加管理员</span>
+</div>
+
+<div class="body">
+    <form method="post">
+        <div class="form-group">
+            <label for="username">用户名称：</label>
+            <input type="text" class="form-control" id="username" placeholder="请输入管理员用户名" name="username" required="required">
+        </div>
+        <div class="form-group">
+            <label for="password">初始密码：</label>
+            <input type="password" class="form-control" id="password" placeholder="请输入初始密码" name="password" required="required">
+        </div>
+        <div class="form-group">
+            <label for="repassword">确认密码：</label>
+            <input type="password" class="form-control" id="repassword" placeholder="请确认密码" name="repassword" required="required">
+        </div>
+        <button type="submit" class="btn blueBtn">添加</button>
+    </form>
+
+</div>
+
+
+{% endblock %}

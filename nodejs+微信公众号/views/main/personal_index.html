@@ -1,0 +1,51 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+
+
+<header>
+    <a href="javascript:history.back();" class="return"><img src="/public/dist/images/main/icon_return.png"></a>
+    <div class=" header-title">
+        <strong>个人</strong>
+    </div>
+</header>
+<div class="container  page-top-bottom personal">
+    <div class="top-banner">
+        <div>
+            <img src="{{user.headImgUrl}}" alt="">
+        </div>
+        <span>{{user.username}}</span>
+    </div>
+    <div class="personal-box">
+        <a class="personal-item" href="/personal/course?userid={{user._id.toString()}}">
+            购买记录 <span class="fr"> > </span>
+        </a>
+    </div>
+    <div class="personal-box">
+        <a class="personal-item" href="/personal/material?userid={{user._id.toString()}}">
+            干货收藏 <span class="fr"> > </span>
+        </a>
+        <a class="personal-item" href="/personal/quiz?userid={{user._id.toString()}}">
+            我的提问 <span class="fr"> > </span>
+        </a>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $('.top-banner img').attr('onerror',"src='/public/dist/images/main/content/photo.png'");
+    })
+</script>
+
+<!-- 引入子集 -->
+{% include 'footer.html' %}
+{% endblock %}
+
+
+

@@ -1,0 +1,53 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+
+
+<header>
+    <!--<a href="javascript:history.back();" class="return"><img src="/public/dist/images/main/icon_return.png"></a>-->
+    <div class=" header-title">
+        <strong>德语课程</strong>
+    </div>
+    <!--<a href="javascript:;" class="next"><img src="/public/images/main/icon_add.png"></a>-->
+</header>
+<div class="container  page-top-bottom">
+    <div class="top-banner">
+        <img src="/public/dist/images/main/content/banner.jpg" alt="">
+    </div>
+    <div class="courseList clear">
+        {% for course in courses %}
+        <a href="/course/detail?id={{course._id.toString()}}" class="courseItem fl">
+            <img class="showImg"  src="" data-url="{{course.img}}" alt="">
+            <div class="item">
+                <h4>{{course.name}}</h4>
+                <p>￥{{course.money}}</p>
+            </div>
+        </a>
+        {% endfor %}
+
+    </div>
+</div>
+<script>
+    $(function () {
+        var $img = $('.showImg');
+        $.each($img, function (eq,item) {
+            var src = showImg($(this).attr('data-url'));
+            $(this).attr('src',src);
+        })
+    });
+</script>
+<!-- 引入子集 -->
+{% include 'footer.html' %}
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top clear">
+    <h3 class="fl title">个人信息</h3>
+</div>
+
+<div class="body personal">
+    <p>用户名：  {{user.username}}</p><!--
+    <p>手机号：  {{user.phone}}</p>-->
+    <p>登录密码： ******</p>
+
+    <button class="btn blueBtn">重置密码</button>
+
+    <form class="resetWord" method="post">
+        <div class="form-group">
+            <label for="password">原始密码：</label><br>
+            <input type="password" placeholder="请输入原始密码" name="password" id="password" required="required">
+        </div>
+        <div class="form-group">
+            <label for="passwordreset">重置密码：</label><br>
+            <input type="password" placeholder="请输入原始密码" name="passwordreset" id="passwordreset" required="required">
+        </div>
+        <div class="form-group">
+            <label for="repasswordreset">确认密码：</label><br>
+            <input type="password" placeholder="请输入原始密码" name="repasswordreset" id="repasswordreset" required="required">
+        </div>
+        <button type="submit" class="btn blueBtn">保存更新</button>
+    </form>
+
+
+</div>
+<div class="mask"></div>
+<script>
+
+    $(function () {
+        $('button').on('click',function () {
+            $('.mask').fadeIn();
+            $('.resetWord').fadeIn();
+        });
+        $('.mask').on('click',function () {
+            $('.mask').fadeOut();
+            $('.resetWord').fadeOut();
+        })
+
+    });
+
+</script>
+
+{% endblock %}

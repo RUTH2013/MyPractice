@@ -1,0 +1,55 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+
+
+<header>
+    <a href="/personal" class="return"><img src="/public/dist/images/main/icon_return.png"></a>
+    <div class=" header-title">
+        <strong>购买记录</strong>
+    </div>
+</header>
+<div class="container page-top-bottom">
+    <div class="personal-course ">
+        {% for course in courseList %}
+
+        <a  class="personalCourseItem clear" href="/course/detail?id={{course._id.toString()}}">
+
+            <img class="showImg fl"  src="" data-url="{{course.img}}" alt="">
+            <div class="item fl">
+                <h4>{{course.name}}</h4>
+                <p>￥{{course.money}}</p>
+            </div>
+
+        </a>
+        {% endfor %}
+
+        {%  if courseList.length==0 %}
+        <div class="tipText">您还没有购买过课程哦~</div>
+        {% endif%}
+
+    </div>
+</div>
+<script>
+    $(function () {
+        // 图片设置
+        var $img = $('.showImg');
+        $.each($img, function (eq,item) {
+            var src = showImg($(this).attr('data-url'));
+            $(this).attr('src',src);
+        })
+
+    });
+</script>
+<!-- 引入子集 -->
+{% include 'footer.html' %}
+{% endblock %}
+
+
+

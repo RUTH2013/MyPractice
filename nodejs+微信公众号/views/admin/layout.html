@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>厦门德语学习公众号管理后台</title>
+    <!--引入wangEditor.css-->
+    <link rel="shortcut icon" href="/public/dist/images/favicon.ico" >
+    <link rel="stylesheet" type="text/css" href="/public/wangEditor/css/wangEditor.min.css">
+    <link rel="stylesheet" href="/public/dist/css/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="/public/dist/css/reset.min.css">
+    <link rel="stylesheet" type="text/css" href="/public/dist/css/admin/admin.min.css">
+    <script type="application/javascript" src="/public/dist/js/lib/jquery.min.js"></script>
+    <script type="application/javascript" src="/public/dist/js/lib/iconfont.min.js"></script><!--引入wangEditor.js-->
+    <script type="text/javascript" src="/public/wangEditor/js/wangEditor.min.js"></script>
+    <script src="/public/dist/js/method.min.js"></script>
+    <script src="/public/dist/js/login.min.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="header clear">
+        <div class="logo fl">
+            <img src="/public/dist/images/logo.png" alt="">
+        </div>
+        <div class="fr">
+            {{decodeURIComponent(userInfo.username)}}
+            <a href="javascript:;" id="logout">[ 退出 ]</a>
+        </div>
+    </div>
+</header>
+<section class="clear">
+    <nav class="fl clear">
+
+        <li class="active"><a href="/admin/usersList"><i class="iconfont icon-yonghuguanli"></i>用户管理</a></li>
+        <li><a href="/admin/course"><i class="iconfont icon-110"></i>课程管理</a></li>
+        <li><a href="/admin/material"><i class="iconfont icon-nanbeiganhuo"></i>干货管理</a></li>
+        <li><a href="/admin/quiz"><i class="iconfont icon-wenda"></i>知识问答</a></li>
+        <li><a href="/admin/personal"><i class="iconfont icon-gerenshezhi"></i>个人设置</a></li>
+        <input type="hidden" value="{{url}}">
+
+    </nav>
+    <script>
+        $(function () {
+
+            var url = $('nav').find('[type=hidden]').val();
+            $.each($('nav').find('li'), function (item,val) {
+                var subUrl = $(this).find('a').attr("href").substr(7);
+                if (url == subUrl){
+                    $(this).addClass('active').siblings().removeClass('active');
+                }
+            });
+        })
+    </script>
+    <div class="contentBox fr">
+        <!-- 占位 -->
+        {% block main %}{% endblock %}
+
+    </div>
+</section>
+<nav>
+
+</nav>
+
+</body>
+</html>

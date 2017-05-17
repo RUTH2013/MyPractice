@@ -1,0 +1,30 @@
+
+<p class="pager clear">
+    {%if page<=1%}
+    <span class="pageBtn disabled">上一页</span>
+    {% else %}
+    <span class="pageBtn"><a href="/admin/{{url}}{{subUrl}}?page={{page-1}}">上一页</a></span>
+    {% endif %}
+    <span>{{page}}</span> / <span id="pageNum">{{pageNum}}</span>
+    {%if page>=pageNum%}
+    <span class="pageBtn disabled">下一页</span>
+    {% else %}
+    <span class="pageBtn"><a href="/admin/{{url}}{{subUrl}}?page={{page+1}}">下一页</a></span>
+    {% endif %}
+
+    <span>
+        <input id="input" type="number" min="1" max="{{pageNum}}" value="{{page}}" />
+        <a  class="pageBtn" id="changePage" href="/admin/{{url}}{{subUrl}}?page={{page}}">GO</a>
+    </span>
+</p>
+
+<script>
+    $('#input').bind('input propertychange', function() {
+        /*if( ( parseInt( $('#input').val()) > parseInt($('#pageNum').html()) ) ||  parseInt( $('#input').val())<1 ) {
+            alert('输入的数字应在1~{{pageNum}}之间');
+            $(this).val(1);
+        }*/
+        $("#changePage").attr("href","/admin/{{url}}{{subUrl}}?page="+ $('#input').val() );
+
+    });
+</script>

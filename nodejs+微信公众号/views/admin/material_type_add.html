@@ -1,0 +1,25 @@
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top breadcrumb clear ">
+    <span><a href="/admin/material/type">干货类型</a></span> /
+    <span class="active">添加类型</span>
+</div>
+
+<div class="body">
+    <form method="post">
+        <div class="form-group">
+            <label for="name">类型名称：</label>
+            <input type="text" class="form-control" id="name" placeholder="请输入分类名称" name="name" required="required">
+        </div>
+        <button type="submit" class="btn blueBtn">保存</button>
+    </form>
+
+</div>
+
+
+{% endblock %}

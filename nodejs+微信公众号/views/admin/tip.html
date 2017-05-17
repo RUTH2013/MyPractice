@@ -1,0 +1,35 @@
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+<div class="top breadcrumb clear ">
+    <span class="active">结果提示</span>
+</div>
+
+<div class="tipBox tip-{{status}}">
+    <p>{{message}}</p>
+    <span style="display: none">{{url}}</span>
+
+</div>
+
+<div class="shade" id="shade_add"></div>
+
+
+<script>
+    $(function(){
+        $("#shade_add").fadeIn();
+        $(".tipBox").slideDown();
+        var url = $('.tipBox').find('span').html() || '/admin';
+        setTimeout(function () {
+            $("#shade_add").fadeOut();
+            $(".tipBox").slideUp();
+            window.location.assign(url);   // 切换路径
+        },1500);
+
+    });
+</script>
+
+
+{% endblock %}

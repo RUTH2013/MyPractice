@@ -1,0 +1,78 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top clear">
+    <h3 class="fl title">用户管理</h3>
+    <a class="fr addBtn" href="/admin/usersList/add">+ 添加管理员</a>
+</div>
+
+<div class="body">
+    <div class="query">
+        <form method="post" class="quiz-form clear">
+            <input type="text" name="search" class="fl" placeholder="请输入用户名" value="{{search}}">
+            <button type="submit" class="btn blueBtn fr">搜索</button>
+        </form>
+    </div>
+    <table class="usersList">
+        <thead>
+            <tr>
+                <th width="35%">用户ID</th>
+                <th width="22%">用户名</th>
+                <th width="20%">报名课程（数量）</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{user._id.toString()}}</td>
+                <td>
+                    {{user.username}}
+                    {% if user.isAdmin %}
+                    (管理员)
+                    {% endif %}
+                </td>
+                <td class="peopelNum">
+                    {% if user.course.length >0 %}
+                    <span class="blueText">{{user.course.length}}</span>
+                    {% else %}
+                    <span>{{user.course.length}}</span>
+                    {% endif %}
+                    <p style="display: none;">
+                    {% for course in user.course %}
+                        <span>{{course.name}}、</span>
+                    {% endfor %}
+                    </p>
+                </td>
+                
+            </td>
+                <td>
+                    <a href="/admin/usersList/detail?id={{user._id.toString()}}" class="btn greenBtn">查看详情</a>
+                    <a href="/admin/usersList/delete?id={{user._id.toString()}}" class="btn redBtn">删除</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    {% if users.length== 0  %}
+    <div class="noData">目前还没有用户数据呦~</div>
+    {% endif %}
+
+</div>
+<script type="text/javascript">
+
+    $('.peopelNum').find('span.blueText').html( $('.peopelNum').find('p span').length );
+
+</script>
+
+{% if pageNum>1 %}
+<!-- 引入子集 -->
+{% include 'pager.html' %}
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,63 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+
+
+<header>
+
+    <!--<a href="javascript:history.back();" class="return"><img src="/public/dist/images/main/icon_return.png"></a>-->
+    <div class=" header-title">
+        <strong>问答</strong>
+    </div>
+    <a href="/quiz/add" class="next"><img src="/public/images/main/icon_add.png"></a>
+
+</header>
+<div class="container page-top-bottom">
+    <!--<div class="clear quizAdd">
+        <a href="/quiz/add" class="btn blueBtn fr">我要提问</a>
+    </div>-->
+    <form method="post" class="quiz-form clear">
+        <input type="text" name="search" class="fl" placeholder="" value="{{search}}">
+        <button type="submit" class="btn blueBtn fr">搜索</button>
+    </form>
+
+    <div class="quizList clear">
+        {% for quiz in quizs %}
+        <a href="/quiz/detail?id={{quiz._id.toString()}}" class="quizItem clear">
+            <div class="clear">
+                <img class="fl" src="{{quiz.user.headImgUrl}}" alt="">
+                <div class="name fl">
+                    <strong>{{quiz.user.username}}</strong>
+                    <p class="formTime">{{quiz.addTime|date('Y-m-d H:i:s', -8*60)}}</p>
+                </div>
+            </div>
+            <p>{{quiz.title}}</p>
+            <span>{{quiz.comments.length}}个回答</span>
+        </a>
+        {% endfor %}
+
+    </div>
+    {% if quizs.length==0  %}
+    <div class="tipText">没有相关问题哦~</div>
+    {% endif %}
+</div>
+<script>
+    $(function(){
+        $.each($('.formTime'),function () {
+            $(this).html(timeAgo($(this).html()));
+        });
+        $('.quizList img').attr('onerror',"src='/public/dist/images/main/content/photo.png'");
+    })
+</script>
+<!-- 引入子集 -->
+{% include 'footer.html' %}
+{% endblock %}
+
+
+

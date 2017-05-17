@@ -1,0 +1,84 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top breadcrumb clear ">
+    <span><a href="/admin/quiz">问答列表</a></span> /
+    <span class="active">问题查看-{{quiz.title}}</span>
+</div>
+
+<div class="body quizShow">
+    <div class="quizMain">
+        <div class="clear">
+            <img class="fl" src="{{quiz.user.headImgUrl}}" alt="">
+            <div class="fl">
+                <h4>{{quiz.title}}</h4>
+                <span>提问者- <span>{{quiz.user.username}}</span>  时间- <span>{{quiz.addTime | date('Y-m-d H:i:s', -60*8)}}</span> 回答数- <span>{{quiz.comments.length}}</span></span>
+                <div class="htmlText">{{quiz.description}}</div>
+            </div>
+            
+        </div>
+    </div>
+
+    <ul>
+        {% for comment in quiz.comments %}
+        <li>
+            {% if comment.replies %}
+            <div class="replyText">
+                回复  &nbsp;&nbsp;&nbsp;&nbsp;  {{comment.replies.user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   {{comment.replies.addTime|date('Y年m月d日 H:i:s', -8*60)}}
+                <p>{{comment.replies.content}}</p>
+            </div>
+            {% endif %}
+            <div class="clear">
+                <img class="fl" src="{{comment.user.headImgUrl}}" alt="">
+                <div class="fl">
+                    <p class="clear">
+                        <span class="com-name fl">{{comment.user.username}}</span>
+                        <span class="com-time fr">{{comment.addTime|date('Y年m月d日 H:i:s', -8*60)}}</span>
+                    </p>
+                    <p class="com-content">{{comment.content}}</p>
+                    <p style="display: none" class="com-id">{{comment._id.toString()}}</p>
+                    <a href="#form"  class="blueText">回复</a>
+                    {% if userInfo.isAdmin %}
+                    <a href="/admin/quiz/edit/commentDelete?id={{comment._id.toString()}}" class="redText">删除</a>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <form method="post" id="form">
+        <div class="form-group replayBtn">
+            <label for="content" >我要回答：</label> <br>
+            <span class="tag"></span><input type="text" name="isReply" id="isReply" style="visibility: hidden" >
+            <textarea class="form-control text" id="content" style="width: 910px;" rows="5" placeholder="请输入回答" name="content" required="required"></textarea>
+        </div>
+        <button type="submit" class="btn blueBtn">保存</button>
+    </form>
+
+
+</div>
+
+<script>
+
+    $('li').delegate('a.blueText','click',function () {
+        $('.replayBtn').find('span').html('@'+$(this).parent().find('.com-name').html() + '<i class="close">X</i>');
+        $('.replayBtn').find('[type=text]').val($(this).parent().find('.com-id').html());
+    });
+    $('.tag').on('click',function () {
+        $('.replayBtn').find('[type=text]').val('');
+        $(this).html('');
+    })
+
+
+
+
+
+</script>
+
+
+{% endblock %}

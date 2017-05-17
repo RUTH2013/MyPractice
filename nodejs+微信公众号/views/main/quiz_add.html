@@ -1,0 +1,37 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+<header>
+    <a href="/quiz" class="return"><img src="/public/dist/images/main/icon_return.png"></a>
+    <div class=" header-title">
+        <strong>提问</strong>
+    </div>
+</header>
+<div class="container page-top-bottom quiz-add">
+    <form  method="post">
+        <div class="form-group">
+            <input class="form-control" type="text" id="title" placeholder="问题描述" name="title" required="required">
+        </div>
+        <div class="form-group" >
+            <textarea class="form-control text" rows="25" id="description" placeholder="继续补充问题细节~" name="description"></textarea>
+        </div>
+
+        <button type="submit">提问</button>
+    </form>
+
+</div>
+<script>
+
+
+</script>
+
+{% endblock %}
+
+
+

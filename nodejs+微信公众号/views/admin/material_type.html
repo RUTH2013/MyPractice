@@ -1,0 +1,95 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top clear">
+    <ul class="fl titleNav clear">
+        <li class="fl"><a href="/admin/material">干货列表</a></li>
+        <li class="active fl"><a href="/admin/material/type">干货类型</a></li>
+    </ul>
+    <a class="fr addBtn" href="/admin/material/type/add">+ 添加类型</a>
+</div>
+
+<div class="body">
+    <table class="usersList">
+        <thead>
+        <tr>
+            <th width="40%">类型名称</th>
+            <th width="30%">已有干货数目</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for materialType in materialtypes %}
+        <tr>
+            <td>{{materialType.name}}</td>
+            <td>{{materialType.materialNum}}</td>
+            <td>
+                <a href="/admin/material/type/edit?id={{materialType._id.toString()}}" class="btn greenBtn">编辑</a>
+                <button class="btn redBtn cancelBtn">删除</button>
+                <span style="display: none">{{materialType._id.toString()}}</span>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    {% if materialtypes.length== 0%}
+    <div class="noData">没有干货类型数据呦~，可以先添加类型~~</div>
+    {% endif %}
+
+
+
+</div>
+<!--删除提示-->
+<div class="tipBox tipTextBox">
+    <p class="tip-waring">删除干货类型将把对应的干货一起删除！</p>
+    <div>
+        <a href="" class="btn blueBtn">删除</a>
+        <button  class="btn blueBtn">取消</button>
+    </div>
+
+</div>
+
+<div class="shade" id="shade_add"></div>
+
+
+<script>
+    $(function(){
+        function show(id) {
+            $('.tipTextBox').find('a').attr('href',id);
+            $("#shade_add").fadeIn();
+            $(".tipBox").slideDown();
+        }
+        function hide() {
+            $('.tipTextBox').find('a').attr('href','');
+            $("#shade_add").fadeOut();
+            $(".tipBox").slideUp();
+        }
+
+        $('.cancelBtn').on('click',function () {
+            var id ='/admin/material/type/delete?id=' +$(this).next('span').html();
+            show(id);
+        });
+        $('.tipTextBox').find('button').on('click',function () {
+            var id = $(this).next('span').html();
+            hide();
+        });
+        /*setTimeout(function () {
+            $("#shade_add").fadeOut();
+            $(".tipBox").slideUp();
+            window.location.assign(url);   // 切换路径
+        },1500);*/
+
+    });
+</script>
+
+{% if pageNum>1 %}
+<!-- 引入子集 -->
+{% include 'pager.html' %}
+
+{% endif %}
+
+{% endblock %}

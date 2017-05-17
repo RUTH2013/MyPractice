@@ -1,0 +1,42 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top breadcrumb clear ">
+    <span><a href="/admin/course">用户列表</a></span> /
+    <span class="active">用户详情</span>
+</div>
+
+<div class="body">
+    <form class="courseForm" method="post">
+        <div class="form-group">
+            <label>用户名：</label>
+            <span>{{user.username}} </span>
+        </div>
+        <div class="form-group">
+            <label>用户头像：</label>
+            <img style="width: 60px;" src="{{user.headImgUrl}}">
+        </div>
+        <div class="form-group">
+            <label>openID：</label>
+            <span>{{user.openId}} </span>
+        </div>
+        <div class="form-group peopelNum">
+            <label>订购课程（ <span class="blueText">{{user.course.length}}</span> 门课程）：</label>
+            <p>
+                {% for course in courses %}
+                <span>{{course.name}}、</span>
+                {% endfor %}
+            </p>
+        </div>
+    </form>
+
+</div>
+<script type="text/javascript">
+
+    $('.peopelNum').find('span.blueText').html( $('.peopelNum').find('p span').length );
+
+</script>
+{% endblock %}

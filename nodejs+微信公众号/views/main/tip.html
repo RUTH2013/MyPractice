@@ -1,0 +1,48 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<header>
+    <a href="javascript:history.back();" class="return"> < 返回</a>
+    <div class=" header-title">
+        <strong>提示</strong>
+    </div>
+</header>
+
+
+<div class="tipBox tip-{{status}}">
+    <p>{{message}}</p>
+    <span style="display: none">{{url}}</span>
+
+</div>
+
+<div class="shade" id="shade_add"></div>
+<!--用户手机验证弹层:over-->
+
+<script>
+    $(function(){
+        $("#shade_add").fadeIn();
+        $(".tipBox").slideDown();
+        var url = $('.tipBox').find('span').html() || '' ;
+        console.log(url);
+        setTimeout(function () {
+
+            $("#shade_add").fadeOut();
+            $(".tipBox").slideUp();
+            if (url==''){
+                window.history.back();
+            }
+            else if(url=="referrer"){
+                window.location=document.referrer;
+            }
+            else{
+                window.location.assign(url);   // 切换路径
+            }
+        },1000);
+
+    });
+</script>
+
+{% endblock %}

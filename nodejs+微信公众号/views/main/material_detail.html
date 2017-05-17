@@ -1,0 +1,58 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<header>
+    <a href="/material" class="return"><img src="/public/dist/images/main/icon_return.png"></a>
+    <div class=" header-title">
+        <strong>干货详情</strong>
+    </div>
+
+    {% if material.isCollect %}
+    <a href="/material/collect/delete?id={{material._id.toString()}}" class="next"><img src="/public/dist/images/main/icon_check_collect.png"></a>
+    {% else %}
+    <a href="/material/collect/add?id={{material._id.toString()}}" class="next"><img src="/public/dist/images/main/icon_collect.png"></a>
+    {% endif %}
+</header>
+<div class="container page-top material-detail">
+    <h3 class="title">{{material.title}}</h3>
+    <p class="detail-time">{{material.addTime|date('Y-m-d', -8*60)}} &nbsp;&nbsp;  阅读量：{{material.views}}</p>
+    {% if material.img %}
+    <img class="showImg"  src="" data-url="{{material.img}}" alt="">
+    {% endif %}
+    <div class="detail-content">
+        {{material.content}}
+    </div>
+</div>
+<script>
+    $(function () {
+
+        var $img = $('.showImg');
+        $.each($img, function (eq,item) {
+            var src = showImg($(this).attr('data-url'));
+            $(this).attr('src',src);
+        });
+
+        $('.detail-content').html(htmlDecodeByRegExp($('.detail-content').html()));
+
+        var $video = $('.detail-content').find('iframe');
+        var $ditu =  $('.detail-content').find('#dituContent') ;
+
+        $.each($video,function (eq,item) {
+            videoSize($('.detail-content'),$(this));
+        });
+        $.each($ditu ,function (eq,item) {
+            videoSize($('.detail-content'),$(this));
+        })
+    });
+
+</script>
+
+{% endblock %}
+
+
+

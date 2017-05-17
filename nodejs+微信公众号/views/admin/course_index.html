@@ -1,0 +1,112 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top clear">
+    <h3 class="fl title">课程列表</h3>
+    <a class="fr addBtn" href="/admin/course/add">+ 添加课程</a>
+</div>
+
+<div class="body">
+
+    <div class="queryBox">
+        <form method="post" class="quiz-form clear">
+            <select name="status" id="status"  class="form-control fl">
+                <option value="all">全部状态</option>
+
+                {% if status == 0 %}
+                <option value="0" selected>未上架</option>
+                {% else %}
+                <option value="0">未上架</option>
+                {% endif %}
+                {% if status == 1 %}
+                <option value="1" selected>已上架</option>
+                {% else %}
+                <option value="1">已上架</option>
+                {% endif %}
+                {% if status == 2 %}
+                <option value="2" selected>已下架</option>
+                {% else %}
+                <option value="2">已下架</option>
+                {% endif %}
+            </select>
+            <input type="text" name="search" class="fl" placeholder="请输入课程名称" value="{{search}}">
+            <button type="submit" class="btn blueBtn fl">搜索</button>
+        </form>
+    </div>
+
+    <table class="usersList">
+        <thead>
+        <tr>
+            <th width="25%">课程名称</th>
+            <th width="18%">课程费用（元）</th>
+            <th width="12%">报名人数</th>
+            <th width="15%">状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for course in courses %}
+        <tr>
+            <td>{{course.name}}</td>
+            <td>{{course.money}}</td>
+            <td class="peopelNum">
+                {% if course.peopleNum.length >0 %}
+                <span class="blueText">{{course.peopleNum.length}}</span>
+                {% else %}
+                <span>{{course.peopleNum.length}}</span>
+                {% endif %}
+                <p style="display: none;">
+                {% for user in course.peopleNum %}
+                    <span>{{user.username}}、</span>
+                {% endfor %}
+                </p>
+                
+            </td>
+            <td>
+                {% if course.status == 0 %}
+                未上架
+                {% endif %}
+                {% if course.status == 1  %}
+                已上架
+                {% endif %}
+                {% if course.status == 2  %}
+                已下架
+                {% endif %}
+            </td>
+            <td>
+                <a href="/admin/course/edit?id={{course._id.toString()}}" class="btn greenBtn">编辑</a>
+                {% if course.status == 1 %}
+                <button class="btn redBtn cancelPutAway">下架</button>
+                {% else %}
+                <button class="btn blueBtn  addPutAway">上架</button>
+                {% endif %}
+                <input type="hidden" class="courseId" value="{{course._id.toString()}}"> <!--保存课程的id-->
+                <a href="/admin/course/delete?id={{course._id.toString()}}" class="btn redBtn cancelAdmin">删除</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    {% if courses.length== 0  %}
+    <div class="noData">目前还没有课程数据呦~，可以先添加课程~~</div>
+    {% endif %}
+    <script>
+        isPutAway('/admin/course/isPutAway');
+        $('.peopelNum').find('span.blueText').html( $('.peopelNum').find('p span').length );
+        
+
+    </script>
+</div>
+
+{% if pageNum>1 %}
+<!-- 引入子集 -->
+{% include 'pager.html' %}
+
+{% endif %}
+
+{% endblock %}

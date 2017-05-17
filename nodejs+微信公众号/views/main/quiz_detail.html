@@ -1,0 +1,93 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+<header>
+    <a href="/quiz" class="return"><img src="/public/dist/images/main/icon_return.png"></a>
+    <div class=" header-title">
+        <strong>问答详情</strong>
+    </div>
+</header>
+<div class="container page-top quiz-detail">
+    <div class="quizItem clear">
+        <div class="clear">
+            <img class="fl" src="{{quiz.user.headImgUrl}}" alt="">
+            <div class="name fl">
+                <strong>{{quiz.user.username}}</strong>
+                <p class="formTime">{{quiz.addTime|date('Y-m-d H:i:s', -8*60)}}</p>
+            </div>
+        </div>
+        <p class="quiz-title">{{quiz.title}}</p>
+        <p class="quiz-description">{{quiz.description}}</p>
+        <span>{{quiz.comments.length}}个回答</span>
+    </div>
+    {% for comment  in quiz.comments %}
+    <div class="quiz-detail-item">
+        <div class="com-name clear">
+            <img class="fl" src="{{comment.user.headImgUrl}}" alt="">
+            <strong class="fl">{{comment.user.username}}</strong>
+        </div>
+        {% if comment.replies %}
+        <div class="replyText">
+            <p class="clear">
+                <span class="fl">回复  {{comment.replies.user.username}}</span>
+            </p>
+            <p class="replay-com">{{comment.replies.content}}</p>
+        </div>
+        {% endif %}
+        <p class="com-content">{{comment.content}}</p>
+        <p style="display: none" class="com-id">{{comment._id.toString()}}</p>
+        <p class="clear com-time">
+            <span class="fl formTime">{{comment.addTime|date('Y-m-d H:i:s', -8*60)}}</span>
+            <a href="#form"  class="blueText fr">回复</a>
+            {% if userInfo.isAdmin %}
+            <a href="/quiz/detail/commentDelete?id={{comment._id.toString()}}" class="redText fr">删除</a>
+            {% endif %}
+
+        </p>
+    </div>
+    {% endfor %}
+
+    <form method="post" id="form">
+        <div class="form-group replayBtn">
+            <label for="content" >我要回答：</label> <br>
+            <span class="tag"></span><input type="text" name="isReply" id="isReply" style="visibility: hidden; display: none;" >
+            <textarea class="form-control text" id="content"  rows="5" placeholder="请输入回答" name="content" required="required"></textarea>
+        </div>
+        <button type="submit" class="btn blueBtn">确定发送</button>
+    </form>
+
+</div>
+<script>
+    $(function () {
+        $('#content').html('');
+
+        $.each($('.formTime'),function () {
+            $(this).html(timeAgo($(this).html()));
+        });
+
+        $('.quiz-detail-item').delegate('a.blueText','click',function () {
+            $('#content').css('paddingTop','0.52rem')
+            $('.replayBtn').find('span').html('@'+$(this).parents('div.quiz-detail-item').find('.com-name strong').html());
+            $('.replayBtn').find('[type=text]').val($(this).parents('div.quiz-detail-item').find('.com-id').html());
+        });
+        $('.tag').on('click',function () {
+            $('.replayBtn').find('[type=text]').val('');
+            $(this).html('');
+            $('#content').css('paddingTop','0.12rem')
+        });
+        $('.quiz-detail img').attr('onerror',"src='/public/dist/images/main/content/photo.png'");
+
+    });
+
+</script>
+
+{% endblock %}
+
+
+

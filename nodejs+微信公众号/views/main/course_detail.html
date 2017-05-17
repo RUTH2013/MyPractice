@@ -1,0 +1,109 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+
+
+<header>
+    <a href="/course" class="return"><img src="/public/dist/images/main/icon_return.png"></a>
+    <div class=" header-title">
+        <strong>课程详情</strong>
+    </div>
+</header>
+<div class="container page-top-bottom course-detail">
+    <img class="showImg" src="" data-url="{{course.img}}" alt="">
+    <div class="detail-main">
+        <h3> {{course.name}}</h3>
+        <p>￥ <span class="moneyValue">{{course.money}}</span></p>
+    </div>
+    <div class="detail-box">
+        <h3>课程详情</h3>
+        <div class="detail-content">
+            {{course.details}}
+        </div>
+    </div>
+</div>
+{% if course.status == 1 %}
+<div class="foot-bar  foot-bar-one foot-bar-red" flex="main:left cross:center box:mean">
+    <a href="javascript:;" id="payBtn"  data-id="{{course._id.toString()}}"　 >立即购买</a>
+</div>
+{% else %}
+<div class="foot-bar  foot-bar-one" flex="main:left cross:center box:mean">
+    <a href="javascript:;"   style="color: #333;">商品已下架</a>
+</div>
+{% endif %}
+
+<script>
+    $(function () {
+        var $img = $('.showImg');
+        $.each($img, function (eq,item) {
+            var src = showImg($(this).attr('data-url'));
+            $(this).attr('src',src);
+        });
+        $('.detail-content').html(htmlDecodeByRegExp($('.detail-content').html()));
+
+        // $('.detail-content').find('iframe')
+
+        
+
+        var $video = $('.detail-content').find('iframe');
+
+        $.each($video,function (eq,item) {
+            videoSize($('.detail-content'),$(this));
+        });
+    });
+
+    // ajax 请求微信支付
+    $(document).ready(function() {
+        // $('#payBtn').on('click', function(event) {
+        //     event.preventDefault();
+        //     /* Act on the event */
+        //     console.log('22222');
+        // });
+        $("#payBtn").on('click', function(){
+            console.log('11111111111111');
+            // event.preventDefault();
+            $.ajax({
+                type:'post',
+                url:'/course/pay',
+                data:{
+                    money: $(".moneyValue").html(),
+                    id: $(this).attr("data-id")
+                },
+                success:function(data){
+                    console.log('testcehngg ');
+                    if(data.code == 2){
+                        location.href='/course/waring?id='+ $('#payBtn').attr("data-id");
+                    }
+                    if(data.code == 1){
+                        onBridgeReady(data.wxParam);
+                    }
+                }
+            })
+        });
+    });
+    // 微信支付
+    function onBridgeReady(data){
+       WeixinJSBridge.invoke(
+           'getBrandWCPayRequest', data,
+           function(res){     
+               if(res.err_msg == "get_brand_wcpay_request:ok" ) {// 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                    location.href='/course/success';
+               }else if(res.err_msg == "get_brand_wcpay_request:fail"){
+                    location.href='/course/error?id='+ $('#payBtn').attr("data-id");
+               }
+           }
+       ); 
+    }
+</script>
+
+
+{% endblock %}
+
+
+

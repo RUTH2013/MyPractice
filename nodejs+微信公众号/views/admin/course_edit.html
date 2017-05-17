@@ -1,0 +1,104 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top breadcrumb clear ">
+    <span><a href="/admin/course">课程列表</a></span> /
+    <span class="active">课程编辑 - {{course.name}}</span>
+</div>
+
+<div class="body">
+    <form class="courseForm" method="post">
+        <div class="form-group">
+            <label for="name">课程名称：</label>
+            <input type="text" class="form-control" id="name" placeholder="请输入课程名称" name="name" required="required" value="{{course.name}}">
+        </div>
+        <div class="form-group">
+            <label for="money">课程价格：</label>
+            <input type="text" class="form-control" id="money" placeholder="请输入课程价格" name="money" required="required"  value="{{course.money}}" onkeyup= "if( ! /^-?\d+\.?\d{0,2}$/.test(this.value)){ var s = this.value;this.value=s.substring(0,s.length-1);}">
+        </div>
+        <div class="form-group peopelNum">
+            <label>报名人员（ <span class="blueText">{{course.peopleNum.length}}</span> 人报名）：</label>
+            <p>
+                {% for people in users %}
+                <span>{{people.username}}、</span>
+                {% endfor %}
+            </p>
+        </div>
+        <div class="form-group" style="height: 430px; width: 910px; ">
+            <label for="img">选择图片：(请选择正方形图片，建议是大于或等于750*750尺寸)</label>
+            <!--<input type="file" id="uploadImg" class="form-control uploadImg">
+            <input type="hidden"  id="img" placeholder="请输入课程名称" name="img">-->
+            <textarea id="img"  name="img" style="width:100%; height: 350px; max-height:382px;"></textarea>
+            <textarea id="imgView"  style="height: 0; visibility:hidden;" >{{course.img}}</textarea>
+        </div>
+        <div class="form-control showImg"></div>
+        <div class="form-group" style="width: 910px;">
+            <label for="details">课程详情：</label>
+            <textarea id="details"  placeholder="请输入课程详情" name="details" style="width:100%; height:600px;max-height:664px;"></textarea>
+            <textarea id="detailsView"  style="height: 0; visibility:hidden;" >{{course.details}}</textarea>
+        </div>
+        <button type="submit" class="btn blueBtn">修改</button>
+    </form>
+
+</div>
+<script type="text/javascript">
+
+    $('.peopelNum').find('span.blueText').html( $('.peopelNum').find('p span').length );
+
+
+    var editor1 = new wangEditor('img');
+    // 上传文件路径
+    editor1.config.uploadImgUrl = '/api/upload';
+    // 普通的自定义菜单
+    editor1.config.menus = [
+        'img'
+    ];
+    // 关闭菜单栏fixed
+    editor1.config.menuFixed = false;
+
+    editor1.create();
+    // 为页面所有的editor配置全局的密钥
+    wangEditor.config.mapAk = 'Zp7sSTV9tMMeixWaWgtV71CT4RRxRQbF';  // 此处换成自己申请的密钥
+
+
+    var editor2 = new wangEditor('details');
+    // 上传文件路径
+    editor2.config.uploadImgUrl = '/api/upload';
+    // 关闭菜单栏fixed
+    editor2.config.menuFixed = false;
+    
+    
+    // 字号
+    editor2.config.fontsizes = {
+        // 格式：'value': 'title'
+        1: '0.26rem',
+        2: '0.28rem',
+        3: '0.30rem',
+        4: '0.32rem',
+        5: '0.34rem',
+        6: '0.36rem',
+        7: '0.38rem',
+        7: '0.40rem'
+    };
+
+    // 为当前的editor配置密钥
+    editor2.config.mapAk = 'Zp7sSTV9tMMeixWaWgtV71CT4RRxRQbF';  // 此处换成自己申请的密钥
+
+
+
+    editor2.create();
+
+    // 避免上面编辑器的 dropPanel 被下面的编辑器遮挡，保证下面的编辑器的 z-index 要小于上面的编辑器
+    editor1.$editorContainer.css('z-index', 20);
+    editor2.$editorContainer.css('z-index', 10);
+
+    editor1.$txt.html(htmlDecodeByRegExp($('#imgView').html()));
+    editor2.$txt.html(htmlDecodeByRegExp($('#detailsView').html()));
+
+</script>
+
+
+{% endblock %}

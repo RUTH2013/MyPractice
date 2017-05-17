@@ -1,0 +1,55 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top clear">
+    <h3 class="fl title">问答列表</h3>
+    <a class="fr addBtn" href="/admin/quiz/add">+ 添加问题</a>
+</div>
+
+<div class="body">
+    <table class="usersList">
+        <thead>
+        <tr>
+            <th width="30%">问题内容</th>
+            <th width="30%">提问者/提问时间</th>
+            <th width="12%">回答数</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quiz in quizs %}
+        <tr>
+            <td>{{quiz.title}}</td>
+            <td>{{quiz.user.username}} / <span class="formTime">{{quiz.addTime | date('Y-m-d H:i:s', -60*8)}}</span> </td>
+            <td>{{quiz.comments.length}}</td>
+            <td>
+                <a href="/admin/quiz/edit?id={{quiz._id.toString()}}" class="btn greenBtn">查看</a>
+                <a href="/admin/quiz/delete?id={{quiz._id.toString()}}" class="btn redBtn">删除</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+    {% if quizs.length== 0 %}
+    <div class="noData">目前还没有问答数据呦~，可以先添加问题~~</div>
+    {% endif %}
+</div>
+<script>
+    isPutAway('/admin/material/isPutAway');
+    $.each($('.formTime'),function () {
+        $(this).html(timeAgo($(this).html()));
+    });
+</script>
+
+{% if pageNum>1 %}
+<!-- 引入子集 -->
+{% include 'pager.html' %}
+
+{% endif %}
+
+{% endblock %}

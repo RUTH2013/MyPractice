@@ -1,0 +1,48 @@
+
+
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+
+
+
+<header>
+
+    <a href="/personal" class="return"><img src="/public/dist/images/main/icon_return.png"></a>
+    <div class=" header-title">
+        <strong>我的提问</strong>
+    </div>
+    <a href="/quiz/add" class="next"><img src="/public/images/main/icon_add.png"></a>
+
+</header>
+<div class="container page-top-bottom">
+
+    <div class="quizList clear">
+        {% for quiz in quizs %}
+        <a href="/quiz/detail?id={{quiz._id.toString()}}" class="quizItem clear">
+            <div class="clear">
+                <img class="fl" src="/public/dist/images/main/content/photo.png" alt="">
+                <div class="name fl">
+                    <strong>{{quiz.user.username}}</strong>
+                    <p class="formTime">{{quiz.addTime|date('Y-m-d H:i:s', -8*60)}}</p>
+                </div>
+            </div>
+            <p>{{quiz.title}}</p>
+            <span>{{quiz.comments.length}}个回答</span>
+        </a>
+        {% endfor %}
+
+    </div>
+    {% if quizs.length==0  %}
+    <div class="tipText">您还没有提过问题哦~</div>
+    {% endif %}
+</div>
+<!-- 引入子集 -->
+{% include 'footer.html' %}
+{% endblock %}
+
+
+

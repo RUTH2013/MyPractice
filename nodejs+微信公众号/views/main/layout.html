@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="wap-font-scale" content="no" />
+    <title>厦门德语学习平台</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+
+    <link rel="shortcut icon" href="/public/dist/images/favicon.ico" >
+    <link rel="stylesheet" type="text/css" href="/public/dist/css/main/main.min.css">
+    <script type="application/javascript" src="/public/dist/js/lib/jquery.min.js"></script>
+
+    <script type="application/javascript" src="/public/dist/js/htmlSize.min.js"></script>
+    <script type="application/javascript" src="/public/dist/js/method.min.js"></script>
+
+</head>
+
+
+
+<body>
+    <div class="page">
+
+        <!-- 占位 -->
+        {% block main %}{% endblock %}
+
+
+    </div>
+
+<script>
+    $(function(){
+        $('img').attr('onerror',"src='/public/dist/images/error.jpg'");
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!-- 继承模板 -->
+{%  extends 'layout.html'  %}
+
+<!-- 子模版重写  -->
+{% block main %}
+
+<div class="top clear">
+    <ul class="fl titleNav clear">
+        <li class="active fl"><a href="/admin/material">干货列表</a></li>
+        <li class="fl"><a href="/admin/material/type">干货类型</a></li>
+    </ul>
+    <a class="fr addBtn" href="/admin/material/add">+ 添加干货</a>
+</div>
+
+<div class="body">
+    <div class="queryBox">
+        <form method="post" class="quiz-form clear">
+            <select name="materialType" id="materialType"  class="form-control fl">
+                <option value="all">全部分类</option>
+                {% for materialtype in materialtypes %}
+                {% if materialType == materialtype._id.toString() %}
+                <option value="{{materialtype._id.toString()}}" selected>{{materialtype.name}}</option>
+                {% else %}
+                <option value="{{materialtype._id.toString()}}">{{materialtype.name}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <select name="status" id="status"  class="form-control fl">
+                <option value="all" >全部状态</option>
+
+                {% if status == 0 %}
+                <option value="0" selected>未上架</option>
+                {% else %}
+                <option value="0">未上架</option>
+                {% endif %}
+                {% if status == 1 %}
+                <option value="1" selected>已上架</option>
+                {% else %}
+                <option value="1">已上架</option>
+                {% endif %}
+                {% if status == 2 %}
+                <option value="2" selected>已下架</option>
+                {% else %}
+                <option value="2">已下架</option>
+                {% endif %}
+            </select>
+            <input type="text" name="search" class="fl" placeholder="请输入标题" value="{{search}}">
+            <button type="submit" class="btn blueBtn fl">搜索</button>
+        </form>
+    </div>
+    <table class="usersList">
+        <thead>
+        <tr>
+            <th width="20%">标题</th>
+            <th width="20%">类型</th>
+            <th width="12%">创建时间</th>
+            <th width="10%">收藏人数</th>
+            <th width="10%">状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for material in materials %}
+        <tr>
+            <td>{{material.title}}</td>
+            <td>{{material.materialtype.name}}</td>
+            <!--时间格式化-->
+            <td class="formTime">{{material.addTime | date('Y-m-d H:i:s', -60*8)}}</td>
+            <td style="text-align: center">{{material.collector.length}}</td>
+            <td>
+                {% if material.status == 0 %}
+                未上架
+                {% endif %}
+                {% if material.status == 1  %}
+                已上架
+                {% endif %}
+                {% if material.status == 2  %}
+                已下架
+                {% endif %}
+            </td>
+            <td>
+                <a href="/admin/material/edit?id={{material._id.toString()}}" class="btn greenBtn">编辑</a>
+                {% if material.status == 1 %}
+                <button class="btn redBtn cancelPutAway">下架</button>
+                {% else %}
+                <button class="btn blueBtn  addPutAway">上架</button>
+                {% endif %}
+                <input type="hidden" class="materialId" value="{{material._id.toString()}}"> <!--保存课程的id-->
+                <a href="/admin/material/delete?id={{material._id.toString()}}&typeid={{material.materialtype._id.toString()}}" class="btn redBtn cancelAdmin">删除</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    {% if materials.length== 0  %}
+    <div class="noData">没有干货数据呦~，可以先添加干货~~</div>
+    {% endif %}
+
+    <script>
+        isPutAway('/admin/material/isPutAway');
+        $.each($('.formTime'),function (val,item) {
+            $(this).html(timeAgo($(this).html()));
+        });
+    </script>
+</div>
+
+{% if pageNum>1 %}
+<!-- 引入子集 -->
+{% include 'pager.html' %}
+
+{% endif %}
+
+{% endblock %}
