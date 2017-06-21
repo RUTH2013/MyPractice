@@ -1,0 +1,25 @@
+.border-1(@color) { // 移动端1px下边框问题
+    position: relative;
+    &:after {
+        display: block;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        border-top: 1px solid @color;
+        content: '';
+    }
+}
+.border-none() { // 移动端1px下边框问题
+    &:after {
+        display: none;
+        content: '';
+    }
+}
+@base-url:'../../components';
+.bg-img(@url) {
+    background-image:url("@{base-url}/@{url}@2x.png");
+    @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3) {
+        background-image: url("@{base-url}/@{url}@3x.png");
+    }
+}
